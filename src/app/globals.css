@@ -9,21 +9,34 @@
   --color-background: #ffffff;
   --color-foreground: #111827;
   --color-muted: #4b5563;
+  --color-surface: #f3f4f6;
+  --color-border: #e5e7eb;
+  --color-primary: #1e3a8a;
+  --color-primary-hover: #1e40af;
+  --color-primary-foreground: #ffffff;
   --color-focus: #2563eb;
 
   --container-content: 80rem;
 
   --spacing-gutter: clamp(1rem, 4vw, 2.5rem);
   --spacing-section: clamp(3rem, 8vw, 7rem);
+  --spacing-header: 4rem;
 
   --text-display: clamp(2rem, 1.5rem + 2.5vw, 3.75rem);
   --text-display--line-height: 1.1;
+  --text-heading: clamp(1.625rem, 1.3rem + 1.5vw, 2.5rem);
+  --text-heading--line-height: 1.2;
 
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 }
 
+@utility grid-auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+
 @layer base {
   html {
+    scroll-behavior: smooth;
     color-scheme: light;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
@@ -52,6 +65,10 @@
 
   p {
     text-wrap: pretty;
+  }
+
+  [id] {
+    scroll-margin-top: calc(var(--spacing-header) + 1rem);
   }
 
   :focus-visible {
