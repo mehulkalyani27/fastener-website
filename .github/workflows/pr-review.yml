@@ -20,29 +20,38 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Claude PR Review
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          show_full_output: true
+
+          # Creates/updates a progress comment on the PR while Claude works.
+          track_progress: true
+
           prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
             Act as a senior engineer reviewing this PR.
 
             Read `CLAUDE.md` first and use it as the project's source of truth.
 
-            Review ONLY the changes introduced by this PR. Inspect relevant existing code
-            when necessary to understand the change and its impact.
+            Review ONLY the changes introduced by this PR. Inspect relevant
+            existing code when necessary to understand the change and its impact.
 
-            This is review-only:
-            - Do not modify files.
-            - Do not commit, push, or merge.
+            This is a review-only task:
+            - Do not modify repository files.
+            - Do not commit.
+            - Do not push.
+            - Do not merge.
             - Do not fix issues automatically.
 
             Find only concrete, actionable problems involving:
+
             - Bugs or regressions
             - Security or data exposure
             - Architecture violations
@@ -52,9 +61,11 @@ jobs:
             - Responsive/accessibility problems
             - Significant SEO or maintainability issues
 
-            Before reporting an issue, verify it against the repository. Do not guess.
+            Before reporting an issue, verify it against the repository.
+            Do not guess.
 
             Ignore:
+
             - Personal style preferences
             - Cosmetic/nitpick comments
             - Pure refactoring suggestions
@@ -62,26 +73,62 @@ jobs:
             - Unrelated existing issues
             - Duplicate findings
 
-            Prioritize correctness and security. Prefer one strong finding over several
-            weak findings.
+            Severity:
 
-            Format findings as:
+            - CRITICAL: Severe security, data-loss, or application-breaking issue.
+            - HIGH: Significant issue that should block merging.
+            - MEDIUM: Meaningful issue that should be addressed but is not
+              necessarily merge-blocking.
+            - LOW: Minor but concrete and actionable issue.
 
-            [CRITICAL|HIGH|MEDIUM|LOW] Title
+            For every actionable finding:
+
+            1. Post the finding as a GitHub PR comment.
+            2. When possible, use an inline comment attached to the exact
+               changed file and line where the issue occurs.
+            3. For findings that cannot be attached to a specific line,
+               use a normal PR comment.
+            4. Do not create duplicate comments for the same issue.
+
+            Use this format:
+
+            [SEVERITY] Title
+
             Location: file:line
-            Problem: concise explanation
-            Fix: concise recommendation
 
-            Only use CRITICAL for severe security, data-loss, or application-breaking
-            issues. Use HIGH for issues that should block merging.
+            Problem:
+            Concise explanation of the concrete issue and why it matters.
 
-            Finish with:
+            Fix:
+            Concise recommendation for resolving the issue.
+
+            Example:
+
+            [LOW] Footer product-category links are not distinct
+
+            Location: src/components/layout/site-footer.tsx:40
+
+            Problem:
+            All product-category links currently point to the same
+            `/#products` destination, so individual categories do not have
+            distinct destinations.
+
+            Fix:
+            Link each category to its specific destination once category-level
+            sections exist, or use a single Products link until then.
+
+            After publishing all findings, provide this summary:
 
             Critical: X | High: X | Medium: X | Low: X
 
-            If no meaningful issues are found, say:
-            "No actionable issues found."
+            If no meaningful issues are found:
 
-            Never claim a test, build, lint, or type check passed unless you actually
-            verified it.
-            
+            No actionable issues found.
+
+            Never claim that tests, build, lint, or type checks passed unless
+            you actually verified them.
+
+            If validation could not be performed, explicitly state why.
+
+          claude_args: |
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
