@@ -1,0 +1,85 @@
+name: Claude PR Review
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  claude-review:
+    name: Claude Code Review
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude PR Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Act as a senior engineer reviewing this PR.
+
+            Read `CLAUDE.md` first and use it as the project's source of truth.
+
+            Review ONLY the changes introduced by this PR. Inspect relevant existing code
+            when necessary to understand the change and its impact.
+
+            This is review-only:
+            - Do not modify files.
+            - Do not commit, push, or merge.
+            - Do not fix issues automatically.
+
+            Find only concrete, actionable problems involving:
+            - Bugs or regressions
+            - Security or data exposure
+            - Architecture violations
+            - Incorrect Next.js/React/TypeScript usage
+            - Supabase/data-access issues
+            - Performance problems
+            - Responsive/accessibility problems
+            - Significant SEO or maintainability issues
+
+            Before reporting an issue, verify it against the repository. Do not guess.
+
+            Ignore:
+            - Personal style preferences
+            - Cosmetic/nitpick comments
+            - Pure refactoring suggestions
+            - Hypothetical problems without evidence
+            - Unrelated existing issues
+            - Duplicate findings
+
+            Prioritize correctness and security. Prefer one strong finding over several
+            weak findings.
+
+            Format findings as:
+
+            [CRITICAL|HIGH|MEDIUM|LOW] Title
+            Location: file:line
+            Problem: concise explanation
+            Fix: concise recommendation
+
+            Only use CRITICAL for severe security, data-loss, or application-breaking
+            issues. Use HIGH for issues that should block merging.
+
+            Finish with:
+
+            Critical: X | High: X | Medium: X | Low: X
+
+            If no meaningful issues are found, say:
+            "No actionable issues found."
+
+            Never claim a test, build, lint, or type check passed unless you actually
+            verified it.
+            

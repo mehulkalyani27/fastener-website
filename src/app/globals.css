@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Values are provisional; the visual system will be defined
+ * during development. Each token generates Tailwind utilities
+ * (e.g. --color-muted → text-muted, --spacing-gutter → px-gutter).
+ */
+@theme {
+  --color-background: #ffffff;
+  --color-foreground: #111827;
+  --color-muted: #4b5563;
+  --color-focus: #2563eb;
+
+  --container-content: 80rem;
+
+  --spacing-gutter: clamp(1rem, 4vw, 2.5rem);
+  --spacing-section: clamp(3rem, 8vw, 7rem);
+
+  --text-display: clamp(2rem, 1.5rem + 2.5vw, 3.75rem);
+  --text-display--line-height: 1.1;
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    overflow-x: clip;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+    overflow-wrap: break-word;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
