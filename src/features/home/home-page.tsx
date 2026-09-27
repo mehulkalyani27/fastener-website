@@ -7,8 +7,10 @@ import { IndustriesSection } from "@/features/home/components/industries-section
 import { ProductsSection } from "@/features/home/components/products-section";
 import { QualitySection } from "@/features/home/components/quality-section";
 import { WhyChooseUsSection } from "@/features/home/components/why-choose-us-section";
+import { SectionSync } from "@/features/navigation/components/section-sync";
 
-export default function Home() {
+/** The single-page home, served at "/" and at every section URL (/about, /products, …). */
+export function HomePage() {
   return (
     <>
       <HeroSection />
@@ -20,6 +22,7 @@ export default function Home() {
       <WhyChooseUsSection />
       <CtaSection />
       <ContactSection />
+      <SectionSync />
     </>
   );
 }

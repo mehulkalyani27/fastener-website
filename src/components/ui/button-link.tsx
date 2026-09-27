@@ -1,13 +1,9 @@
-import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
+import { SectionLink } from "@/features/navigation/components/section-link";
+import { type ButtonVariant, buttonClassName } from "@/components/ui/button-styles";
 
-type ButtonLinkProps = ComponentPropsWithoutRef<typeof Link> & {
-  variant?: "primary" | "secondary";
-};
-
-const variants = {
-  primary: "bg-primary text-primary-foreground hover:bg-primary-hover",
-  secondary: "border border-border bg-background text-foreground hover:bg-surface",
+type ButtonLinkProps = ComponentPropsWithoutRef<typeof SectionLink> & {
+  variant?: ButtonVariant;
 };
 
 export function ButtonLink({
@@ -15,10 +11,5 @@ export function ButtonLink({
   className = "",
   ...props
 }: ButtonLinkProps) {
-  return (
-    <Link
-      className={`inline-flex min-h-11 items-center justify-center rounded-md px-5 text-sm font-semibold transition-colors duration-200 ease-standard ${variants[variant]} ${className}`}
-      {...props}
-    />
-  );
+  return <SectionLink data-magnetic className={buttonClassName(variant, className)} {...props} />;
 }
