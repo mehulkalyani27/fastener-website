@@ -10,7 +10,7 @@ export function Button({ variant = "primary", className = "", type = "button", .
     <button
       data-magnetic
       type={type}
-      className={buttonClassName(variant, className)}
+      className={buttonClassName(variant, `disabled:cursor-not-allowed disabled:opacity-60 ${className}`)}
       {...props}
     />
   );

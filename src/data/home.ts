@@ -123,8 +123,6 @@ export const ctaContent = {
   title: "Discuss your fastener requirements",
   description:
     "Share your requirements, drawings or quantities and our team will get back to you.",
-  primaryCta: { label: "Request a Quote", href: "/contact" },
-  secondaryCta: { label: "Send an Inquiry", href: "/contact" },
 };
 
 export const contactContent = {
@@ -132,4 +130,6 @@ export const contactContent = {
   description:
     "Tell us what you need — product, quantity or a custom requirement — and our team will get back to you.",
   submitLabel: "Send Inquiry",
+  /** Shown until online submission is built (inquiry storage is a later phase). */
+  submitPending: "Online inquiries are coming soon.",
 };

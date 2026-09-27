@@ -32,8 +32,13 @@ export function ContactSection() {
             className="sm:col-span-2"
           />
           <TextAreaField id="message" label="Message" className="sm:col-span-2" />
-          <div className="pt-2 sm:col-span-2">
-            <Button className="w-full sm:w-auto">{contactContent.submitLabel}</Button>
+          <div className="flex flex-col gap-3 pt-2 sm:col-span-2 sm:flex-row sm:items-center sm:gap-5">
+            <Button disabled aria-describedby="inquiry-status" className="w-full sm:w-auto">
+              {contactContent.submitLabel}
+            </Button>
+            <p id="inquiry-status" className="text-sm text-muted">
+              {contactContent.submitPending}
+            </p>
           </div>
         </form>
       </Container>

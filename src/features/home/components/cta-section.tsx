@@ -1,9 +1,6 @@
 import { Container } from "@/components/layout/container";
 import { LogoMark } from "@/components/layout/logo";
 import { Section } from "@/components/layout/section";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { ButtonLink } from "@/components/ui/button-link";
-import { QuoteButton } from "@/components/ui/quote-button";
 import { ctaContent } from "@/data/home";
 
 export function CtaSection() {
