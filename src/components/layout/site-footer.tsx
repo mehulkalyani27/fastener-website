@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
+import { Logo } from "@/components/layout/logo";
 import { productCategories } from "@/data/products";
 import { contactInfo, mainNavigation, siteConfig, socialLinks } from "@/data/site";
 
@@ -11,7 +12,7 @@ export function SiteFooter() {
     <footer className="border-t border-border bg-surface">
       <Container className="grid-auto-fit grid gap-10 py-12">
         <div>
-          <p className="text-lg font-bold">{siteConfig.name}</p>
+          <Logo />
           <p className="mt-3 text-sm text-muted">{siteConfig.tagline}</p>
         </div>
 

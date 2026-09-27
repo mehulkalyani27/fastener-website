@@ -1,10 +1,10 @@
 import type { NavItem, SocialLink } from "@/types/content";
 
 export const siteConfig = {
-  name: "[Company Name]",
+  name: "Metacore Fasteners",
   tagline: "[Company Tagline]",
   description:
-    "[Company Name] supplies fasteners for industrial, construction and manufacturing applications.",
+    "Metacore Fasteners supplies fasteners for industrial, construction and manufacturing applications.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   locale: "en",
 } as const;

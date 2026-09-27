@@ -1,16 +1,15 @@
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
+import { Logo } from "@/components/layout/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { ButtonLink } from "@/components/ui/button-link";
-import { mainNavigation, primaryCta, siteConfig } from "@/data/site";
+import { mainNavigation, primaryCta } from "@/data/site";
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background">
       <Container className="relative flex h-header items-center justify-between gap-6">
-        <Link href="/" className="text-lg font-bold">
-          {siteConfig.name}
-        </Link>
+        <Logo />
 
         <nav aria-label="Main" className="hidden lg:block">
           <ul className="flex items-center gap-8">

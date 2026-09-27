@@ -1,19 +1,20 @@
+import { siteConfig } from "@/data/site";
 import type { ContentItem, NavItem } from "@/types/content";
 
 export const heroContent = {
   eyebrow: "Fastener Manufacturing & Supply",
   title: "Reliable fasteners for industrial and commercial applications",
   description:
-    "[Company Name] supplies a range of standard and custom fasteners to support manufacturing, construction and maintenance requirements.",
+    `${siteConfig.name} supplies a range of standard and custom fasteners to support manufacturing, construction and maintenance requirements.`,
   primaryCta: { label: "Request a Quote", href: "/#contact" },
   secondaryCta: { label: "View Products", href: "/#products" },
   visualLabel: "[Hero Image / Product Visual]",
 } satisfies Record<string, string | NavItem>;
 
 export const aboutContent = {
-  title: "About [Company Name]",
+  title: `About ${siteConfig.name}`,
   introduction: [
-    "[Company Name] is a fastener [manufacturer / supplier / distributor] serving customers across a range of industries. [Add a short company introduction here.]",
+    `${siteConfig.name} is a fastener [manufacturer / supplier / distributor] serving customers across a range of industries. [Add a short company introduction here.]`,
     "[Describe the company's experience, expertise and approach to working with customers.]",
   ],
   facts: [
@@ -101,7 +102,7 @@ export const qualityContent = {
 };
 
 export const whyChooseUsContent = {
-  title: "Why Choose [Company Name]",
+  title: `Why Choose ${siteConfig.name}`,
   items: [
     { title: "Quality", description: "[Describe the company's approach to quality.]" },
     { title: "Reliability", description: "[Describe consistency of supply and service.]" },
