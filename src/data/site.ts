@@ -1,3 +1,4 @@
+import { sectionPath, sectionRoutes } from "@/data/sections";
 import type { NavItem, SocialLink } from "@/types/content";
 
 export const siteConfig = {
@@ -17,17 +18,13 @@ export const contactInfo = {
 } as const;
 
 export const mainNavigation: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/#about" },
-  { label: "Products", href: "/#products" },
-  { label: "Industries", href: "/#industries" },
-  { label: "Quality", href: "/#quality" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Home", href: sectionPath("home") },
+  ...sectionRoutes.map(({ slug, label }) => ({ label, href: sectionPath(slug) })),
 ];
 
 export const primaryCta: NavItem = {
   label: "Request a Quote",
-  href: "/#contact",
+  href: sectionPath("contact"),
 };
 
 export const socialLinks: SocialLink[] = [

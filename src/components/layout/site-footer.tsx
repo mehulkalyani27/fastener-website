@@ -1,19 +1,21 @@
-import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { Logo } from "@/components/layout/logo";
 import { productCategories } from "@/data/products";
+import { sectionPath } from "@/data/sections";
 import { contactInfo, mainNavigation, siteConfig, socialLinks } from "@/data/site";
+import { SectionLink } from "@/features/navigation/components/section-link";
 
-const headingClass = "text-sm font-semibold uppercase tracking-wide";
-const listClass = "mt-4 space-y-2 text-sm text-muted";
+const headingClass = "eyebrow text-ink-accent";
+const listClass = "mt-5 space-y-1 text-sm text-ink-muted";
+const linkClass = "inline-block py-1 transition-colors hover:text-ink-foreground";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-surface">
-      <Container className="grid-auto-fit grid gap-10 py-12">
-        <div>
+    <footer className="surface-ink">
+      <Container className="grid grid-cols-2 gap-x-6 gap-y-12 py-16 sm:py-20 lg:grid-cols-[1.6fr_1fr_1fr_1.3fr_1fr] lg:gap-x-10">
+        <div className="col-span-2 lg:col-span-1">
           <Logo />
-          <p className="mt-3 text-sm text-muted">{siteConfig.tagline}</p>
+          <p className="mt-5 max-w-xs text-sm leading-relaxed text-ink-muted">{siteConfig.tagline}</p>
         </div>
 
         <nav aria-labelledby="footer-navigation">
@@ -23,9 +25,9 @@ export function SiteFooter() {
           <ul className={listClass}>
             {mainNavigation.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="hover:text-foreground">
+                <SectionLink href={item.href} className={linkClass}>
                   {item.label}
-                </Link>
+                </SectionLink>
               </li>
             ))}
           </ul>
@@ -38,24 +40,24 @@ export function SiteFooter() {
           <ul className={listClass}>
             {productCategories.map((category) => (
               <li key={category.slug}>
-                <Link href="/#products" className="hover:text-foreground">
+                <SectionLink href={sectionPath("products")} className={linkClass}>
                   {category.name}
-                </Link>
+                </SectionLink>
               </li>
             ))}
           </ul>
         </nav>
 
-        <div>
+        <div className="col-span-2 sm:col-span-1">
           <h2 className={headingClass}>Contact</h2>
-          <address className={`${listClass} not-italic`}>
+          <address className={`${listClass} break-words not-italic`}>
             {contactInfo.address.map((line) => (
-              <span key={line} className="block">
+              <span key={line} className="block py-1">
                 {line}
               </span>
             ))}
-            <span className="block">{contactInfo.email}</span>
-            <span className="block">{contactInfo.phone}</span>
+            <span className="block py-1">{contactInfo.email}</span>
+            <span className="block py-1">{contactInfo.phone}</span>
           </address>
         </div>
 
@@ -65,11 +67,11 @@ export function SiteFooter() {
             {socialLinks.map((social) => (
               <li key={social.label}>
                 {social.href ? (
-                  <a href={social.href} className="hover:text-foreground">
+                  <a href={social.href} className={linkClass}>
                     {social.label}
                   </a>
                 ) : (
-                  social.label
+                  <span className="inline-block py-1">{social.label}</span>
                 )}
               </li>
             ))}
@@ -77,8 +79,8 @@ export function SiteFooter() {
         </div>
       </Container>
 
-      <div className="border-t border-border">
-        <Container className="py-6 text-sm text-muted">
+      <div className="border-t border-ink-border">
+        <Container className="py-6 text-xs tracking-wide text-ink-muted sm:text-sm">
           <p>
             &copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
           </p>

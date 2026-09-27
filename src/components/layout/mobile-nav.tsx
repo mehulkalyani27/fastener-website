@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ButtonLink } from "@/components/ui/button-link";
+import { QuoteButton } from "@/components/ui/quote-button";
+import { SectionLink } from "@/features/navigation/components/section-link";
 import type { NavItem } from "@/types/content";
 
 type MobileNavProps = {
@@ -30,8 +30,11 @@ export function MobileNav({ items, cta }: MobileNavProps) {
         aria-expanded={open}
         aria-controls="mobile-navigation"
         onClick={() => setOpen((value) => !value)}
-        className="inline-flex min-h-11 items-center rounded-md border border-border px-4 text-sm font-semibold"
+        className="inline-flex min-h-11 items-center gap-2.5 rounded-control border border-ink-border px-4 text-sm font-semibold"
       >
+        <svg aria-hidden="true" viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+          {open ? <path d="M3 3l10 10M13 3L3 13" /> : <path d="M2 5h12M2 11h12" />}
+        </svg>
         {open ? "Close" : "Menu"}
       </button>
 
@@ -39,24 +42,24 @@ export function MobileNav({ items, cta }: MobileNavProps) {
         id="mobile-navigation"
         aria-label="Mobile"
         hidden={!open}
-        className="absolute inset-x-0 top-full border-b border-border bg-background"
+        className="surface-ink absolute inset-x-0 top-full max-h-[calc(100svh-var(--spacing-header))] overflow-y-auto border-b border-ink-border shadow-raised"
       >
-        <ul className="mx-auto flex max-w-content flex-col px-gutter py-4">
+        <ul className="mx-auto flex max-w-content flex-col px-gutter pt-2 pb-6">
           {items.map((item) => (
-            <li key={item.href}>
-              <Link
+            <li key={item.href} className="border-b border-ink-border">
+              <SectionLink
                 href={item.href}
                 onClick={close}
-                className="block py-3 text-base font-medium hover:text-primary"
+                className="block py-4 text-base font-medium text-ink-muted hover:text-ink-foreground aria-[current=page]:text-ink-foreground"
               >
                 {item.label}
-              </Link>
+              </SectionLink>
             </li>
           ))}
-          <li className="pt-3">
-            <ButtonLink href={cta.href} onClick={close} className="w-full">
+          <li className="pt-6">
+            <QuoteButton href={cta.href} onClick={close} className="w-full">
               {cta.label}
-            </ButtonLink>
+            </QuoteButton>
           </li>
         </ul>
       </nav>

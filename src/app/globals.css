@@ -1,37 +1,170 @@
 @import "tailwindcss";
 
 /*
- * Design tokens. Values are provisional; the visual system will be defined
- * during development. Each token generates Tailwind utilities
+ * Design tokens. Brand colours come from the Metacore logo: navy #1F2440, white,
+ * and steel #A9B0C9. Each token generates Tailwind utilities
  * (e.g. --color-muted → text-muted, --spacing-gutter → px-gutter).
  */
 @theme {
   --color-background: #ffffff;
-  --color-foreground: #111827;
-  --color-muted: #4b5563;
-  --color-surface: #f3f4f6;
-  --color-border: #e5e7eb;
-  --color-primary: #1e3a8a;
-  --color-primary-hover: #1e40af;
+  --color-foreground: #161a2e;
+  --color-muted: #525873;
+  --color-surface: #f3f4f8;
+  --color-border: #dde0ea;
+  --color-primary: #1f2440;
+  --color-primary-hover: #2c3358;
   --color-primary-foreground: #ffffff;
-  --color-focus: #2563eb;
+  --color-focus: #1f2440;
+
+  /* Dark (navy) surfaces: header, hero, engineering, CTA and footer. */
+  --color-ink: #1f2440;
+  --color-ink-foreground: #ffffff;
+  --color-ink-muted: #c4c9db;
+  --color-ink-accent: #a9b0c9;
+  --color-ink-border: #363c5c;
 
   --container-content: 80rem;
 
   --spacing-gutter: clamp(1rem, 4vw, 2.5rem);
-  --spacing-section: clamp(3rem, 8vw, 7rem);
+  --spacing-section: clamp(3.5rem, 2rem + 6vw, 7.5rem);
+  --spacing-block: clamp(2.5rem, 1.5rem + 3vw, 4rem);
   --spacing-header: 4rem;
 
-  --text-display: clamp(2rem, 1.5rem + 2.5vw, 3.75rem);
-  --text-display--line-height: 1.1;
-  --text-heading: clamp(1.625rem, 1.3rem + 1.5vw, 2.5rem);
-  --text-heading--line-height: 1.2;
+  --text-display: clamp(2rem, 1.35rem + 3.6vw, 4.25rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.03em;
+  --text-heading: clamp(1.75rem, 1.25rem + 2vw, 3rem);
+  --text-heading--line-height: 1.1;
+  --text-heading--letter-spacing: -0.025em;
+
+  --radius-control: 0.375rem;
+  --radius-card: 0.75rem;
+
+  --shadow-card: 0 1px 2px rgb(31 36 64 / 0.04), 0 1px 1px rgb(31 36 64 / 0.03);
+  --shadow-raised: 0 18px 40px -18px rgb(31 36 64 / 0.22), 0 2px 6px -2px rgb(31 36 64 / 0.06);
 
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@utility grid-auto-fit {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Wide-tracked label style taken from the "FASTENERS" line of the logo. */
+@utility eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+/* Dark brand surface; also flips the focus ring so it stays visible on navy. */
+@utility surface-ink {
+  background-color: var(--color-ink);
+  color: var(--color-ink-foreground);
+  --color-focus: var(--color-ink-foreground);
+}
+
+@property --torque-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes torque-sweep {
+  to {
+    --torque-angle: 360deg;
+  }
+}
+
+/*
+ * Signature quote CTA for navy surfaces. ::before is a 1px steel edge (a masked border) with a
+ * highlight circling it like a torque ring; ::after is a white fill that "tightens" in from the
+ * left on hover/focus. Both sit behind the label via isolation.
+ */
+@utility torque-ring {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    padding: 1px;
+    border-radius: inherit;
+    background:
+      conic-gradient(
+        from var(--torque-angle),
+        transparent 0 62%,
+        var(--color-ink-foreground) 78%,
+        transparent 92%
+      ),
+      linear-gradient(
+        color-mix(in srgb, var(--color-ink-accent) 50%, transparent),
+        color-mix(in srgb, var(--color-ink-accent) 50%, transparent)
+      );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    animation: torque-sweep 3.5s linear infinite;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background-color: var(--color-ink-foreground);
+    scale: 0 1;
+    transform-origin: left center;
+    transition: scale 0.5s var(--ease-standard);
+  }
+
+  &:hover::after,
+  &:focus-visible::after {
+    scale: 1 1;
+  }
+}
+
+/*
+ * Side-by-side ("split") compositions for the hero and Thread sections: from laptop width, or
+ * any landscape screen from 40rem. Below that they stack. Must match SPLIT_QUERY in
+ * src/features/experience/lib/media.ts.
+ */
+@custom-variant split {
+  @media (min-width: 64rem) {
+    @slot;
+  }
+  @media (min-width: 40rem) and (orientation: landscape) {
+    @slot;
+  }
+}
+
+/* Short landscape screens (phones on their side). */
+@custom-variant short (@media (max-height: 30rem));
+
+/*
+ * Thread-section titles, sized so the longest word (CONNECTION, ≈6.85em) fits its slot: the
+ * full content width when stacked, 52% of it when split, and capped by height on short screens.
+ */
+@utility thread-title {
+  font-size: min(calc((100vw - 2 * var(--spacing-gutter)) / 7.2), 5.5rem);
+
+  @variant split {
+    font-size: min(calc((min(100vw, 80rem) - 2 * var(--spacing-gutter)) * 0.52 / 7.2), 7rem);
+  }
+
+  @variant short {
+    font-size: min(calc((min(100vw, 80rem) - 2 * var(--spacing-gutter)) * 0.52 / 7.2), 11svh);
+  }
 }
 
 @layer base {
@@ -59,6 +192,7 @@
   h4,
   h5,
   h6 {
+    letter-spacing: -0.015em;
     text-wrap: balance;
     overflow-wrap: break-word;
   }
