@@ -3,18 +3,18 @@ import type { NavItem, SocialLink } from "@/types/content";
 
 export const siteConfig = {
   name: "Metacore Fasteners",
-  tagline: "[Company Tagline]",
+  tagline: "Premium Hex Head Self-Drilling Screws for Fast & Secure Metal Fastening",
   description:
-    "Metacore Fasteners supplies fasteners for industrial, construction and manufacturing applications.",
+    "Metacore Fasteners manufactures Hex Head Self-Drilling Screws (SDS) in lengths from 19 mm to 65 mm for roofing, pre-engineered buildings and industrial fastening.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   locale: "en",
 } as const;
 
 export const contactInfo = {
-  address: ["[Company Address Line 1]", "[City, State, Postal Code]", "[Country]"],
-  email: "[Contact Email]",
-  phone: "[Phone Number]",
-  hours: "[Business Hours]",
+  address: ["Plot No. 123, GIDC Industrial Estate, Phase II", "Vapi, Gujarat 396195", "India"],
+  email: "info@sds-metacore.com",
+  phone: "+91 9824341915",
+  hours: ["Monday – Saturday: 8:30 AM – 6:30 PM (IST)", "Sunday: Closed"],
 } as const;
 
 export const mainNavigation: NavItem[] = [
@@ -28,8 +28,7 @@ export const primaryCta: NavItem = {
 };
 
 export const socialLinks: SocialLink[] = [
-  { label: "[LinkedIn]" },
-  { label: "[Facebook]" },
-  { label: "[Instagram]" },
-  { label: "[YouTube]" },
+  { label: "LinkedIn", href: "https://linkedin.com/company/metacore-fasteners" },
+  { label: "Facebook", href: "https://facebook.com/metacorefasteners" },
+  { label: "Instagram", href: "https://instagram.com/metacorefasteners" },
 ];

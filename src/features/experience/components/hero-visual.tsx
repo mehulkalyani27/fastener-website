@@ -17,6 +17,8 @@ export function HeroVisual() {
   const canRender = useCanRender3D();
   const split = useMediaQuery(SPLIT_QUERY);
   const inView = useInView(container);
+  // Unmounted (freeing its WebGL context) when more than a screen away; paused when off screen.
+  const near = useInView(container, "100% 0px");
   const progress = useScrollProgress(section, canRender);
 
   return (
@@ -29,7 +31,7 @@ export function HeroVisual() {
       className="absolute inset-x-0 top-0 h-[var(--hero-visual)] split:inset-y-0 split:h-auto"
     >
       {canRender ? (
-        <HeroScene progress={progress} active={inView} layout={split ? "split" : "stacked"} />
+        near && <HeroScene progress={progress} active={inView} layout={split ? "split" : "stacked"} />
       ) : (
         <div className="flex h-full items-center justify-center py-8 split:ml-auto split:w-1/2 split:py-16">
           <BoltIllustration />

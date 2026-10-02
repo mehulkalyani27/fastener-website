@@ -15,3 +15,22 @@ export const HEAT_TINTED_STEEL_MATERIAL = {
   iridescenceIOR: 1.6,
   iridescenceThicknessRange: [140, 420] as [number, number],
 } as const;
+
+/*
+ * Engineering-visualization palette for application scenes on the light section background:
+ * context parts stay matte and neutral so the screw is the only polished metal.
+ */
+export const PAINTED_SHEET_MATERIAL = { color: "#6f7890", metalness: 0.25, roughness: 0.55 } as const;
+export const GALVANIZED_STEEL_MATERIAL = { color: "#9aa1ad", metalness: 0.7, roughness: 0.42 } as const;
+/** Cut faces of sectioned parts, lighter so the cross-section reads at a glance. */
+export const SECTION_FACE_MATERIAL = { color: "#e4e7ee", metalness: 0, roughness: 0.75 } as const;
+export const EPDM_MATERIAL = { color: "#17181d", metalness: 0, roughness: 0.85 } as const;
+/** Visualization of a silver organic coating finish (e.g. Class 3 / Ruspert look) — not a colour spec. */
+export const COATED_SCREW_MATERIAL = { ...STEEL_MATERIAL, color: "#cdd0d6", roughness: 0.3 } as const;
+/** Visualization looks for the other scenes' screws and parts — not finish or material specs. */
+export const ZINC_SCREW_MATERIAL = { ...STEEL_MATERIAL, color: "#d3d8df", roughness: 0.28 } as const;
+export const STAINLESS_SCREW_MATERIAL = { ...STEEL_MATERIAL, color: "#c2c6cc", roughness: 0.22 } as const;
+export const HARDENED_POINT_MATERIAL = { ...STEEL_MATERIAL, color: "#4a4e57", roughness: 0.34, clearcoat: 0 } as const;
+export const ALUMINIUM_MATERIAL = { color: "#b8bec8", metalness: 0.6, roughness: 0.38 } as const;
+export const POWDER_COATED_MATERIAL = { color: "#7d8594", metalness: 0.2, roughness: 0.6 } as const;
+export const SOLAR_GLASS_MATERIAL = { color: "#1e2a44", metalness: 0.3, roughness: 0.18 } as const;

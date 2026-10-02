@@ -16,7 +16,7 @@ export function ProductsSection() {
           title={productsContent.title}
           description={productsContent.description}
         />
-        <CardGrid columns={4}>
+        <CardGrid>
           {productCategories.map((category, index) => (
             <li key={category.slug} className="flex">
               <Card index={index} title={category.name} description={category.description} />
