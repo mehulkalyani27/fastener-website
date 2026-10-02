@@ -28,7 +28,17 @@ export type Industry = {
   slug: string;
   name: string;
   description: string;
-  applications: string[];
+  /** Optional short tags for example applications. */
+  applications?: string[];
+};
+
+/** Text for one chapter of the Industries 3D story — describes the visualization, not product specs. */
+export type IndustryStoryChapter = {
+  slug: string;
+  application: string;
+  why: string;
+  /** Step captions keyed as in the chapter's scene timeline. */
+  captions: Record<string, string>;
 };
 
 export type SocialLink = {

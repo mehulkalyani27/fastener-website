@@ -9,12 +9,13 @@ import {
   Vector3,
 } from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import { perfSpan } from "@/features/experience/lib/perf";
 import { BOLT, type BoltSpec, boltCenterOffset, LONG_BOLT, NUT, TIP_HEIGHT } from "@/features/experience/three/specs";
 
 /** Vertical offset that centers the hero bolt (head top to tip) on the origin. */
 export const BOLT_CENTER_OFFSET = boltCenterOffset(BOLT);
 
-class HelixCurve extends Curve<Vector3> {
+export class HelixCurve extends Curve<Vector3> {
   radius: number;
   length: number;
   turns: number;
@@ -53,21 +54,22 @@ function hexagon(radius: number, holeRadius?: number) {
   return shape;
 }
 
-function hexPrism(radius: number, height: number, holeRadius?: number) {
+/** Hex prism standing on y = 0 (bevels included), axis along y. */
+export function hexPrism(radius: number, height: number, holeRadius?: number, bevel = BOLT.bevel) {
   const geometry = new ExtrudeGeometry(hexagon(radius, holeRadius), {
     depth: height,
     bevelEnabled: true,
-    bevelThickness: BOLT.bevel,
-    bevelSize: BOLT.bevel,
+    bevelThickness: bevel,
+    bevelSize: bevel,
     bevelSegments: 3,
     curveSegments: 32,
   });
   geometry.rotateX(-Math.PI / 2);
-  geometry.translate(0, BOLT.bevel, 0);
+  geometry.translate(0, bevel, 0);
   return geometry;
 }
 
-function merge(parts: BufferGeometry[]) {
+export function merge(parts: BufferGeometry[]) {
   const merged = mergeGeometries(parts.map((part) => (part.index ? part.toNonIndexed() : part)));
   parts.forEach((part) => part.dispose());
   return merged;
@@ -103,10 +105,11 @@ function createBoltGeometry(spec: BoltSpec) {
 
 const cache = new Map<string, BufferGeometry>();
 
-function cached(key: string, build: () => BufferGeometry) {
+/** Builds a geometry once per key and reuses it (geometries here are shared, never disposed). */
+export function cached(key: string, build: () => BufferGeometry) {
   let geometry = cache.get(key);
   if (!geometry) {
-    geometry = build();
+    geometry = perfSpan("shared", `geometry-build:${key}`, build);
     cache.set(key, geometry);
   }
   return geometry;

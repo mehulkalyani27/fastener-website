@@ -21,24 +21,19 @@ export function ContactSection() {
           data-reveal
           className="grid gap-x-5 gap-y-6 rounded-card border border-border bg-background p-5 shadow-raised sm:grid-cols-2 sm:p-8 lg:p-10"
         >
-          <TextField id="full-name" label="Full Name" autoComplete="name" />
-          <TextField id="company-name" label="Company Name" autoComplete="organization" />
-          <TextField id="email" label="Email" type="email" autoComplete="email" />
-          <TextField id="phone" label="Phone Number" type="tel" autoComplete="tel" />
-          <TextField
-            id="requirement"
-            label="Product / Requirement"
-            placeholder="e.g. hex bolts, custom fasteners"
+          <TextField id="name" label="Name" autoComplete="name" />
+          <TextField id="phone" label="Phone" type="tel" autoComplete="tel" />
+          <TextField id="email" label="Email" type="email" autoComplete="email" className="sm:col-span-2" />
+          <TextAreaField
+            id="message"
+            label="Message"
+            placeholder="Steel thickness, application, or anything else we should know"
             className="sm:col-span-2"
           />
-          <TextAreaField id="message" label="Message" className="sm:col-span-2" />
           <div className="flex flex-col gap-3 pt-2 sm:col-span-2 sm:flex-row sm:items-center sm:gap-5">
-            <Button disabled aria-describedby="inquiry-status" className="w-full sm:w-auto">
+            <Button disabled className="w-full sm:w-auto">
               {contactContent.submitLabel}
             </Button>
-            <p id="inquiry-status" className="text-sm text-muted">
-              {contactContent.submitPending}
-            </p>
           </div>
         </form>
       </Container>

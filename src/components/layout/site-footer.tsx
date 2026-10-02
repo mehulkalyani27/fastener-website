@@ -8,6 +8,7 @@ import { SectionLink } from "@/features/navigation/components/section-link";
 const headingClass = "eyebrow text-ink-accent";
 const listClass = "mt-5 space-y-1 text-sm text-ink-muted";
 const linkClass = "inline-block py-1 transition-colors hover:text-ink-foreground";
+const contactLinkClass = "block py-1 transition-colors hover:text-ink-foreground";
 
 export function SiteFooter() {
   return (
@@ -35,7 +36,7 @@ export function SiteFooter() {
 
         <nav aria-labelledby="footer-products">
           <h2 id="footer-products" className={headingClass}>
-            Products
+            Product Range
           </h2>
           <ul className={listClass}>
             {productCategories.map((category) => (
@@ -56,8 +57,17 @@ export function SiteFooter() {
                 {line}
               </span>
             ))}
-            <span className="block py-1">{contactInfo.email}</span>
-            <span className="block py-1">{contactInfo.phone}</span>
+            <a href={`mailto:${contactInfo.email}`} className={contactLinkClass}>
+              {contactInfo.email}
+            </a>
+            <a href={`tel:${contactInfo.phone.replace(/\s/g, "")}`} className={contactLinkClass}>
+              {contactInfo.phone}
+            </a>
+            {contactInfo.hours.map((line) => (
+              <span key={line} className="block py-1">
+                {line}
+              </span>
+            ))}
           </address>
         </div>
 
@@ -67,7 +77,7 @@ export function SiteFooter() {
             {socialLinks.map((social) => (
               <li key={social.label}>
                 {social.href ? (
-                  <a href={social.href} className={linkClass}>
+                  <a href={social.href} target="_blank" rel="noopener noreferrer" className={linkClass}>
                     {social.label}
                   </a>
                 ) : (

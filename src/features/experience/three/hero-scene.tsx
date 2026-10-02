@@ -127,7 +127,7 @@ export default function HeroScene({ progress, active, layout }: HeroSceneProps) 
   return (
     <Canvas
       flat
-      frameloop={active ? "always" : "never"}
+      frameloop={active ? "always" : "demand"}
       dpr={[1, 1.5]}
       camera={{ position: [0, 0, 7], fov: 35 }}
       gl={{ antialias: true, powerPreference: "high-performance" }}

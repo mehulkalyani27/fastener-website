@@ -3,11 +3,15 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import dynamic from "next/dynamic";
-import { type CSSProperties, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 import { Container } from "@/components/layout/container";
 import { useCanRender3D } from "@/features/experience/hooks/use-can-render-3d";
+import { useCanvasMount } from "@/features/experience/hooks/use-canvas-mount";
+import { useHydrated } from "@/features/experience/hooks/use-hydrated";
 import { useInView } from "@/features/experience/hooks/use-in-view";
 import { useMediaQuery } from "@/features/experience/hooks/use-media-query";
+import { usePerfCycle, usePerfMount, usePerfSection } from "@/features/experience/hooks/use-perf";
+import { perfImport, perfMark } from "@/features/experience/lib/perf";
 import { REDUCED_MOTION_QUERY, SPLIT_QUERY } from "@/features/experience/lib/media";
 import {
   type Assembly,
@@ -23,12 +27,9 @@ import {
 import { formatIndex } from "@/lib/format";
 import type { ThreadPanel } from "@/types/content";
 
-const ThreadedScene = dynamic(() => import("@/features/experience/three/threaded-scene"), {
+const ThreadedScene = dynamic(() => perfImport("thread", import("@/features/experience/three/threaded-scene")), {
   ssr: false,
 });
-
-const subscribeNever = () => () => {};
-const useHydrated = () => useSyncExternalStore(subscribeNever, () => true, () => false);
 
 // Each title sits where the rising diagonal ("\\") leaves space at its moment: side sets the
 // alignment and entry direction, row the vertical anchor.
@@ -112,7 +113,18 @@ export function ThreadedStory({ panels }: { panels: ThreadPanel[] }) {
   const split = useMediaQuery(SPLIT_QUERY);
   const canRender = useCanRender3D();
   const inView = useInView(track);
+  // The canvas is prepared before the section is reached (while the page is idle, or at the latest
+  // within a screen of it) and kept, so its first frame is already drawn on arrival; it is paused
+  // when off screen.
+  const near = useInView(track, "100% 0px");
   const story = hydrated && !reducedMotion;
+  const [ready, setReady] = useState(false);
+  const onReady = useCallback(() => setReady(true), []);
+  const mounted = useCanvasMount("thread", { near, ready, skip: hydrated && (reducedMotion || !canRender) });
+
+  usePerfMount("thread");
+  usePerfSection(track, "thread");
+  usePerfCycle("thread", story && canRender && mounted && assembly !== null);
 
   useEffect(() => {
     const element = stage.current;
@@ -172,6 +184,7 @@ export function ThreadedStory({ panels }: { panels: ThreadPanel[] }) {
       onRefresh: (self) => render(self.progress),
     });
     render(trigger.progress);
+    perfMark("thread", "scroll-driver-ready");
 
     return () => {
       trigger.kill();
@@ -192,7 +205,7 @@ export function ThreadedStory({ panels }: { panels: ThreadPanel[] }) {
           {assembly && (
             <div aria-hidden="true" className="pointer-events-none absolute inset-0">
               {canRender ? (
-                <ThreadedScene progress={progress} assembly={assembly} active={inView} />
+                mounted && <ThreadedScene progress={progress} assembly={assembly} active={inView} onReady={onReady} />
               ) : (
                 <FlatFastener assembly={assembly} />
               )}
