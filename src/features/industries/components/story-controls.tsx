@@ -15,9 +15,9 @@ export function StoryControls({ names, chapter, onGo }: StoryControlsProps) {
             onClick={() => onGo(index)}
             aria-label={`Show ${name}`}
             aria-current={index === chapter ? "step" : undefined}
-            className="flex h-10 w-full items-center"
+            className="group flex h-10 w-full items-center rounded-sm outline-offset-2 focus-visible:outline-2 focus-visible:outline-focus"
           >
-            <span className="block h-0.5 w-full bg-foreground/15">
+            <span className="block h-0.5 w-full bg-foreground/15 transition-[height] duration-200 group-hover:h-1 group-focus-visible:h-1">
               <span data-chapter-bar={index} className="block h-full origin-left scale-x-0 bg-primary" />
             </span>
           </button>

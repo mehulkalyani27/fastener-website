@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { type FocusEvent, type PointerEvent, type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { Container } from "@/components/layout/container";
 import { useCanRender3D } from "@/features/experience/hooks/use-can-render-3d";
 import { useCanvasMount } from "@/features/experience/hooks/use-canvas-mount";
@@ -74,10 +74,14 @@ export function IndustryStory({ chapters, fallback }: IndustryStoryProps) {
   const onScreen = useInView(track, "0px", PLAY_VISIBILITY);
 
   const [chapter, setChapter] = useState(0);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [announcement, setAnnouncement] = useState("");
   const [ready, setReady] = useState(false);
   const mounted = useCanvasMount("industries", { near, ready, skip: hydrated && !canRender });
   const onReady = useCallback(() => setReady(true), []);
-  const running = story && onScreen && pageVisible && ready;
+  // The story holds still while the pointer is over it or keyboard focus is inside it (WCAG 2.2.2).
+  const running = story && onScreen && pageVisible && ready && !hovered && !focused;
 
   useEffect(() => {
     if (!ready && canvasBox.current) canvasBox.current.style.opacity = "0";
@@ -123,12 +127,33 @@ export function IndustryStory({ chapters, fallback }: IndustryStoryProps) {
 
   const { goTo } = usePlayback({ count: CHAPTER_COUNT, running, ready, progress, control, onFrame: render });
 
+  // Mouse only: a touch tap must not leave the story held. Focus counts only when it comes from the
+  // keyboard (`:focus-visible`), so clicking a step does not freeze playback until focus moves away.
+  const onPointerEnter = (event: PointerEvent) => setHovered(event.pointerType === "mouse");
+  const onPointerLeave = () => setHovered(false);
+  const onFocus = (event: FocusEvent) => setFocused(event.target.matches(":focus-visible"));
+  const onBlur = (event: FocusEvent) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
+  };
+
+  // Announced only when the user picks an industry, not on every automatic change.
+  const showIndustry = (index: number) => {
+    goTo(index);
+    setAnnouncement(`Showing industry ${index + 1} of ${CHAPTER_COUNT}: ${texts[index].industry}`);
+  };
+
   // One wrapper element in both modes (same position, same type), so React keeps the same DOM node
   // when the story takes over and the observers above keep watching it.
   return (
     <div ref={track}>
       {story ? (
-        <div className="h-[calc(100svh-var(--spacing-header))]">
+        <div
+          className="h-[calc(100svh-var(--spacing-header))]"
+          onPointerEnter={onPointerEnter}
+          onPointerLeave={onPointerLeave}
+          onFocus={onFocus}
+          onBlur={onBlur}
+        >
           <Container className="grid h-full grid-rows-[minmax(0,1fr)_auto] gap-4 py-4 sm:gap-6 sm:py-6 split:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] split:grid-rows-1 split:items-center split:gap-12 split:py-10 short:py-4">
             <div aria-hidden="true" className="relative min-h-0 split:order-2 split:h-full">
               {/* Invisible until the first usable frame, then faded in by the playback clock. */}
@@ -168,10 +193,10 @@ export function IndustryStory({ chapters, fallback }: IndustryStoryProps) {
                 <StoryControls
                   names={texts.map((text) => text.industry)}
                   chapter={chapter}
-                  onGo={goTo}
+                  onGo={showIndustry}
                 />
                 <p className="sr-only" aria-live="polite">
-                  {`Industry ${chapter + 1} of ${CHAPTER_COUNT}: ${texts[chapter].industry}`}
+                  {announcement}
                 </p>
               </div>
 
