@@ -5,7 +5,7 @@ export const siteConfig = {
   name: "Metacore Fasteners",
   tagline: "Premium Hex Head Self-Drilling Screws for Fast & Secure Metal Fastening",
   description:
-    "Metacore Fasteners manufactures Hex Head Self-Drilling Screws (SDS) in lengths from 19 mm to 65 mm for roofing, pre-engineered buildings and industrial fastening.",
+    "Metacore Fasteners manufactures ST 5.5 (#12) Hex Head Self-Drilling Screws (SDS) in lengths from 19 mm to 65 mm for roofing, pre-engineered buildings and industrial fastening.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   locale: "en",
 } as const;

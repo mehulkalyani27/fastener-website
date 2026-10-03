@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { CardGrid } from "@/components/ui/card-grid";
 import { SectionHeader } from "@/components/ui/section-header";
 import { productsContent } from "@/data/home";
-import { productCategories } from "@/data/products";
+import { productCategories, productSpecifications } from "@/data/products";
 import { SectionLink } from "@/features/navigation/components/section-link";
 
 export function ProductsSection() {
@@ -17,33 +17,44 @@ export function ProductsSection() {
           description={productsContent.description}
         />
         <CardGrid>
-          {productCategories.map((category, index) => (
+          {[...productCategories, ...productSpecifications].map((category, index) => (
             <li key={category.slug} className="flex">
               <Card index={index} title={category.name} description={category.description} />
             </li>
           ))}
           <li className="flex">
-            <SectionLink
-              href={productsContent.cta.href}
-              className="surface-ink group flex w-full flex-col justify-between gap-10 rounded-card p-6 shadow-card transition-[background-color,box-shadow] duration-300 ease-standard hover:bg-primary-hover hover:shadow-raised sm:p-7"
-            >
+            <div className="surface-ink flex w-full flex-col justify-between gap-10 rounded-card p-6 shadow-card sm:p-7">
               <span aria-hidden="true" className="eyebrow text-ink-accent">
-                Enquire
+                Sample Pack
               </span>
-              <span className="flex items-end justify-between gap-4 text-lg font-semibold tracking-[-0.01em]">
-                {productsContent.cta.label}
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 16 16"
-                  className="size-5 shrink-0 transition-transform duration-300 ease-standard group-hover:translate-x-1"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
+              <div className="flex flex-col gap-4">
+                <SectionLink
+                  href={productsContent.cta.href}
+                  className="group flex items-end justify-between gap-4 text-lg font-semibold tracking-[-0.01em]"
                 >
-                  <path d="M2 8h12M9 3l5 5-5 5" />
-                </svg>
-              </span>
-            </SectionLink>
+                  {productsContent.cta.label}
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 16 16"
+                    className="size-5 shrink-0 transition-transform duration-300 ease-standard group-hover:translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  >
+                    <path d="M2 8h12M9 3l5 5-5 5" />
+                  </svg>
+                </SectionLink>
+                {productsContent.datasheet && (
+                  <a
+                    href={productsContent.datasheet.href}
+                    download
+                    className="text-sm text-ink-muted underline underline-offset-4 transition-colors hover:text-ink-foreground"
+                  >
+                    {productsContent.datasheet.label}
+                  </a>
+                )}
+              </div>
+            </div>
           </li>
         </CardGrid>
       </Container>

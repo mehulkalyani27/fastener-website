@@ -32,14 +32,14 @@ export type SdsSpec = {
 };
 
 /**
- * WORKING VISUALIZATION VALUES for the roofing scene, taken from the storyboard — not confirmed
- * product data. Replace with the product datasheet (DIN 7504 K dimensions, pitch, drill point,
- * washer) before presenting any of these as specifications.
+ * The roofing screw. Confirmed product data: ST 5.5 diameter, 65 mm length, 8 mm across flats,
+ * 14 TPI (1.814 mm pitch) and a 16 mm bonded washer. Flange diameter, head height and drill-point
+ * dimensions are still WORKING VISUALIZATION VALUES.
  */
 export const ROOFING_SDS_VISUAL: SdsSpec = {
   diameter: 5.5,
   length: 65,
-  pitch: 1.8,
+  pitch: 1.814,
   headAcrossFlats: 8,
   headHeight: 5.5,
   flangeDiameter: 11.5,
@@ -77,25 +77,26 @@ export const sdsCoreRadius = (spec: SdsSpec) => spec.diameter * 0.36;
 export const sdsThreadedLength = (spec: SdsSpec) => spec.length - spec.drillPointLength - spec.tipLength;
 
 /*
- * WORKING VISUALIZATION VALUES for the other application scenes (storyboard assumptions, not
- * product data). All share the 8 mm hex head so the story can pass from one screw head to the next.
+ * The other application scenes: every one is ST 5.5 at 14 TPI with the 8 mm hex head, so the story
+ * can pass from one screw head to the next. Lengths and drill-point dimensions are WORKING
+ * VISUALIZATION VALUES.
  */
 const SDS_HEAD = { headAcrossFlats: 8, headHeight: 5.5, flangeDiameter: 11.5, flangeThickness: 1.2 };
 const BONDED_WASHER = { diameter: 16, steelThickness: 1, epdmThickness: 2.5, epdmMinThickness: 1.8 };
 
 /** Side-lap stitching screw with a bonded washer. */
 export const STITCH_SDS_VISUAL: SdsSpec = {
-  ...SDS_HEAD, diameter: 4.8, length: 25, pitch: 1.6, drillPointLength: 5, tipLength: 2, washer: BONDED_WASHER,
+  ...SDS_HEAD, diameter: 5.5, length: 25, pitch: 1.814, drillPointLength: 5, tipLength: 2, washer: BONDED_WASHER,
 };
 /** Short screw for sheet-metal brackets, no washer. */
 export const BRACKET_SDS_VISUAL: SdsSpec = {
-  ...SDS_HEAD, diameter: 4.8, length: 19, pitch: 1.6, drillPointLength: 5, tipLength: 2,
+  ...SDS_HEAD, diameter: 5.5, length: 19, pitch: 1.814, drillPointLength: 5, tipLength: 2,
 };
 /** Bi-metal screw: stainless body, hardened drill point (two materials in the scene). */
 export const BIMETAL_SDS_VISUAL: SdsSpec = {
-  ...SDS_HEAD, diameter: 5.5, length: 35, pitch: 1.8, drillPointLength: 8, tipLength: 2.5,
+  ...SDS_HEAD, diameter: 5.5, length: 35, pitch: 1.814, drillPointLength: 8, tipLength: 2.5,
 };
 /** Long drill point for thick steel. */
 export const HEAVY_SDS_VISUAL: SdsSpec = {
-  ...SDS_HEAD, diameter: 5.5, length: 45, pitch: 1.8, drillPointLength: 14, tipLength: 2.5,
+  ...SDS_HEAD, diameter: 5.5, length: 45, pitch: 1.814, drillPointLength: 14, tipLength: 2.5,
 };
