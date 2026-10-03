@@ -13,7 +13,7 @@ export const productCategories: ProductCategory[] = [
   {
     slug: "stocked-lengths",
     name: "Stocked Lengths",
-    description: `Ready inventory in ${lengthsList} for fast dispatch.`,
+    description: "Ready inventory across every stocked length for fast dispatch.",
   },
   {
     slug: "head-type",
