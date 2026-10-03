@@ -59,7 +59,7 @@ export function TorqueDial() {
     <div
       ref={dial}
       aria-hidden="true"
-      className="pointer-events-none fixed right-4 bottom-4 z-30 hidden size-14 rounded-full border border-border bg-background/85 text-foreground shadow-card backdrop-blur sm:block sm:size-16 print:hidden"
+      className="pointer-events-none fixed right-4 bottom-4 z-30 hidden size-14 rounded-full border border-border bg-background/85 text-foreground shadow-card backdrop-blur sm:block sm:size-16 pointer-coarse:hidden print:hidden"
     >
       <svg viewBox="0 0 64 64" className="absolute inset-0 size-full -rotate-90">
         {Array.from({ length: TICKS }, (_, index) => (

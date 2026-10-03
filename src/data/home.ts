@@ -111,8 +111,13 @@ export const qualityContent = {
         "EN 10204 3.1 Test Certificates, Salt Spray Test Reports, Dimensional Inspection Certificates.",
     },
   ] satisfies ContentItem[],
-  certificationsTitle: "Certifications",
-  certifications: ["ISO 9001:2015 Quality Management System"],
+  /** The one certificate we hold, split from "ISO 9001:2015 Quality Management System". */
+  certification: {
+    label: "Certification",
+    standard: "ISO 9001:2015",
+    name: "Quality Management System",
+    note: "The internationally recognised standard for quality management systems, built on consistent, documented processes.",
+  },
 };
 
 export const whyChooseUsContent = {

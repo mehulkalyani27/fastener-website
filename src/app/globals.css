@@ -135,14 +135,12 @@
 }
 
 /*
- * Side-by-side ("split") compositions for the hero and Thread sections: from laptop width, or
- * any landscape screen from 40rem. Below that they stack. Must match SPLIT_QUERY in
+ * Side-by-side ("split") compositions for the hero, Thread and Industries sections: any landscape
+ * screen from 40rem. Portrait screens stack, however wide (a 1024 px-wide portrait tablet would
+ * otherwise get a tall, mostly empty split). Must match SPLIT_QUERY in
  * src/features/experience/lib/media.ts.
  */
 @custom-variant split {
-  @media (min-width: 64rem) {
-    @slot;
-  }
   @media (min-width: 40rem) and (orientation: landscape) {
     @slot;
   }
@@ -203,6 +201,14 @@
 
   [id] {
     scroll-margin-top: calc(var(--spacing-header) + 1rem);
+  }
+
+  /* Landscape phones: spacing sized from the width alone would take about half the visible height. */
+  @media (max-height: 30rem) {
+    :root {
+      --spacing-section: 2.5rem;
+      --spacing-block: 2rem;
+    }
   }
 
   :focus-visible {
