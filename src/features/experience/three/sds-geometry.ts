@@ -6,17 +6,19 @@ import { type SdsSpec, sdsCoreRadius, sdsThreadedLength } from "@/features/exper
 const RADIAL = 40;
 const HEAD_BEVEL = 0.3;
 
+const DEFAULT_FLUTES = { depth: 0.5, turns: 1, radius: 1.02 };
+
 /**
  * Fluted drill section: a two-lobed cross-section (the concave waist forms the flutes), extruded
- * along the axis and twisted one turn, so it reads as a drill rather than a plain cylinder.
+ * along the axis and twisted `turns` times, so it reads as a drill rather than a plain cylinder.
  * Spans y = 0 down to y = -length.
  */
-function drillFlutes(radius: number, length: number) {
+function drillFlutes(radius: number, length: number, depth: number, turns: number) {
   const shape = new Shape();
   const samples = 64;
   for (let index = 0; index <= samples; index++) {
     const angle = (index / samples) * Math.PI * 2;
-    const r = radius * (0.5 + 0.5 * Math.pow(Math.abs(Math.cos(angle)), 0.6));
+    const r = radius * (depth + (1 - depth) * Math.pow(Math.abs(Math.cos(angle)), 0.6));
     const x = Math.cos(angle) * r;
     const y = Math.sin(angle) * r;
     if (index === 0) shape.moveTo(x, y);
@@ -29,7 +31,7 @@ function drillFlutes(radius: number, length: number) {
   const position = geometry.attributes.position;
   const normal = geometry.attributes.normal;
   for (let index = 0; index < position.count; index++) {
-    const angle = (-position.getY(index) / length) * Math.PI * 2;
+    const angle = (-position.getY(index) / length) * Math.PI * 2 * turns;
     const cos = Math.cos(angle);
     const sin = Math.sin(angle);
     const x = position.getX(index);
@@ -86,10 +88,11 @@ function createSdsGeometry(spec: SdsSpec): SdsGeometry {
   const thread = new TubeGeometry(new HelixCurve(core, threadLength, turns), Math.round(turns * 32), threadDepth, 8, false);
   thread.translate(0, -threadStart, 0);
 
-  const flutes = drillFlutes(core * 1.02, spec.drillPointLength);
+  const { depth, turns: fluteTurns, radius: fluteRadius } = { ...DEFAULT_FLUTES, ...spec.drillFlutes };
+  const flutes = drillFlutes(core * fluteRadius, spec.drillPointLength, depth, fluteTurns);
   flutes.translate(0, -threaded, 0);
 
-  const tip = new ConeGeometry(core * 1.02, spec.tipLength, RADIAL);
+  const tip = new ConeGeometry(core * fluteRadius, spec.tipLength, RADIAL);
   tip.rotateX(Math.PI);
   tip.translate(0, -threaded - spec.drillPointLength - spec.tipLength / 2, 0);
 
@@ -98,7 +101,7 @@ function createSdsGeometry(spec: SdsSpec): SdsGeometry {
   return {
     body: merge([flange, head, shank, thread]),
     point: merge([flutes, tip]),
-    washerSteel: washer ? ring(washer.diameter / 2, bore) : undefined,
+    washerSteel: washer && washer.steelThickness > 0 ? ring(washer.diameter / 2, bore) : undefined,
     washerEpdm: washer ? ring(washer.diameter / 2, bore) : undefined,
   };
 }

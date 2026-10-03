@@ -54,20 +54,22 @@ type SdsWasherProps = ThreeElements["group"] & {
 };
 
 /**
- * The bonded sealing washer under the head: a steel backing ring over an EPDM ring, hanging from
- * y = 0 (the underside of the head). Renders nothing for a spec without a washer.
+ * The sealing washer under the head: an EPDM ring, over which sits a steel backing ring if the spec
+ * has one, hanging from y = 0 (the underside of the head). Renders nothing without a washer.
  */
 function SdsWasher({ spec, epdmThickness, epdmRef, ...group }: SdsWasherProps) {
   const geometry = useMemo(() => getSdsGeometry(spec), [spec]);
   const washer = spec.washer;
-  if (!washer || !geometry.washerSteel || !geometry.washerEpdm) return null;
+  if (!washer || !geometry.washerEpdm) return null;
   const epdm = epdmPose(spec, epdmThickness ?? washer.epdmThickness);
 
   return (
     <group {...group}>
-      <mesh geometry={geometry.washerSteel} position-y={-washer.steelThickness} scale-y={washer.steelThickness}>
-        <meshPhysicalMaterial {...STEEL_MATERIAL} roughness={0.35} />
-      </mesh>
+      {geometry.washerSteel && (
+        <mesh geometry={geometry.washerSteel} position-y={-washer.steelThickness} scale-y={washer.steelThickness}>
+          <meshPhysicalMaterial {...STEEL_MATERIAL} roughness={0.35} />
+        </mesh>
+      )}
       <mesh ref={epdmRef} geometry={geometry.washerEpdm} position-y={epdm.y} scale={epdm.scale}>
         <meshStandardMaterial {...EPDM_MATERIAL} />
       </mesh>

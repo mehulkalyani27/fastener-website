@@ -21,6 +21,12 @@ export type SdsSpec = {
   /** Fluted drill section between the thread and the tip cone. */
   drillPointLength: number;
   tipLength: number;
+  /**
+   * Shape of the drill flutes (default: a shallow, single-turn drill). `depth` is the radius at
+   * the flute floor as a share of the full radius (smaller = deeper flutes), `turns` the twist over
+   * the drill section, `radius` the drill's radius as a share of the thread's core radius.
+   */
+  drillFlutes?: { depth: number; turns: number; radius: number };
   /** Bonded sealing washer: a steel backing ring over an EPDM ring. */
   washer?: { diameter: number; steelThickness: number; epdmThickness: number; epdmMinThickness: number };
 };
@@ -45,9 +51,18 @@ export const ROOFING_SDS_VISUAL: SdsSpec = {
 
 /**
  * The screw shown wherever the site presents a fastener on its own (hero, Thread): the roofing
- * screw without its washer. WORKING VISUALIZATION VALUES, like the others.
+ * screw made 30% shorter (65 → 45.5 mm), with a black EPDM sealing washer directly under the flange
+ * (no steel backing ring) and a long, deeply fluted Tek-style drill point. WORKING VISUALIZATION
+ * VALUES, like the others.
  */
-export const SHOWCASE_SDS_VISUAL: SdsSpec = { ...ROOFING_SDS_VISUAL, washer: undefined };
+export const SHOWCASE_SDS_VISUAL: SdsSpec = {
+  ...ROOFING_SDS_VISUAL,
+  length: 45.5,
+  drillPointLength: 14,
+  tipLength: 3,
+  washer: { diameter: 16, steelThickness: 0, epdmThickness: 2.5, epdmMinThickness: 1.8 },
+  drillFlutes: { depth: 0.3, turns: 1.6, radius: 1.12 },
+};
 
 /** Height of the head's top above the underside of the flange. */
 export const sdsHeadTopHeight = (spec: SdsSpec) => spec.flangeThickness + spec.headHeight;

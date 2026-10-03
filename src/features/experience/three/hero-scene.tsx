@@ -31,7 +31,7 @@ const WORLD_PER_MM = SCREW_HEIGHT / SCREW_HEIGHT_MM;
 /** Moves the screw's centre (head top to drill point) onto the origin, in millimetres. */
 const CENTER_OFFSET_MM = (SCREW.length - sdsHeadTopHeight(SCREW)) / 2;
 /** Widest the tilted screw gets either side of its axis, including pointer-driven lean. */
-const SCREW_HALF_WIDTH = 0.95;
+const SCREW_HALF_WIDTH = 1;
 const ZONE_MARGIN_PX = 24;
 
 // Mirrors of the layout CSS: Container max-w-content (80rem) and px-gutter

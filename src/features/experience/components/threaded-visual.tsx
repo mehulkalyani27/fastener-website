@@ -90,7 +90,8 @@ function FlatFastener({ assembly }: { assembly: Assembly }) {
   return (
     <div aria-hidden="true" className="absolute size-0" style={style}>
       {bar(-REACH.headUnderside, REACH.tip, HALF.shank, "rounded-sm bg-ink-accent/35")}
-      {bar(-REACH.flangeTop, -REACH.headUnderside, HALF.head, "rounded-sm bg-ink-accent/60")}
+      {bar(-REACH.headUnderside, -REACH.headUnderside + REACH.washer, HALF.head, "rounded-sm bg-ink-border")}
+      {bar(-REACH.flangeTop, -REACH.headUnderside, HALF.flange, "rounded-sm bg-ink-accent/60")}
     </div>
   );
 }
