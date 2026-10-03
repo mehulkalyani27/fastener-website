@@ -6,7 +6,7 @@ import { HeroVisual } from "@/features/experience/components/hero-visual";
  * Two compositions (see the `split` variant):
  * - stacked (phones, portrait tablets): a visual band sized from the screen height, with the
  *   copy directly below it (content height, no full-screen stretch);
- * - split (laptop+, landscape): full-bleed visual, copy in the left ~half of the grid, bolt
+ * - split (laptop+, landscape): full-bleed visual, copy in the left ~half of the grid, screw
  *   centered on the grid's right column.
  */
 export function HeroSection() {

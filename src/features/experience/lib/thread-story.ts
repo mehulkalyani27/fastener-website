@@ -1,8 +1,8 @@
-import { headTop, LONG_BOLT, NUT, TIP_HEIGHT } from "@/features/experience/three/specs";
+import { SHOWCASE_SDS_VISUAL as SCREW, sdsHeadTopHeight, sdsHexRadius } from "@/features/experience/three/specs";
 
 /**
- * Scroll schedule for the Thread section. Everything — title transitions, the fastener's
- * travel, the nut's travel and rotation — is a pure function of one scroll progress (0 → 1), so
+ * Scroll schedule for the Thread section. Everything — title transitions, the screw's travel
+ * and rotation — is a pure function of one scroll progress (0 → 1), so
  * forward and backward scrolling replay exactly the same states:
  *
  *   0 ─ enter ─ ENTER_END ─ hold ─ [transition 1] ─ hold ─ [transition 2] ─ hold ─ 1
@@ -41,16 +41,16 @@ export const THREAD_MOTION = {
   stacked: { rise: 0.4, swing: 8 },
 };
 
-/**
- * The nut threads along the shank over the whole sequence. Rotation and travel come from the
- * same value (one pitch of travel per turn), which keeps it visually locked to the thread.
- */
-export const NUT_TRAVEL = 0.5;
-/** Pose reference point: this far from the head's underside (model units), where the nut sits mid-sequence. */
-export const NUT_MID = 4.2;
+/** The Thread story is laid out in "model units", each this many millimetres of the screw. */
+export const MM_PER_UNIT = 7;
+const units = (mm: number) => mm / MM_PER_UNIT;
 
-export const nutTravel = (progress: number) => (progress - 0.5) * NUT_TRAVEL;
-export const nutRotation = (progress: number) => -(nutTravel(progress) / LONG_BOLT.pitch) * Math.PI * 2;
+/** Turns the screw makes about its axis over the whole sequence (negative = driving direction). */
+const SPIN_TURNS = 4.5;
+export const screwSpin = (progress: number) => -(progress - 0.5) * SPIN_TURNS * Math.PI * 2;
+
+/** Pose reference point: this far from the head's underside along the axis (model units). */
+export const REFERENCE = units(30);
 
 export type ThreadLayout = keyof typeof THREAD_STORY.angle;
 export type Rect = { left: number; top: number; right: number; bottom: number };
@@ -73,12 +73,20 @@ export type Pose = { x: number; y: number; angle: number };
 
 // Extents along the axis from the reference point, and half-thicknesses (model units).
 export const REACH = {
-  headTop: NUT_MID + headTop(LONG_BOLT),
-  headUnderside: NUT_MID,
-  tip: LONG_BOLT.length + TIP_HEIGHT - NUT_MID,
-  nutHalfLength: NUT.height / 2,
+  headTop: REFERENCE + units(sdsHeadTopHeight(SCREW)),
+  /** Top of the flange, under the hex head. */
+  flangeTop: REFERENCE + units(SCREW.flangeThickness),
+  headUnderside: REFERENCE,
+  tip: units(SCREW.length) - REFERENCE,
+  /** Length of the drill point (flutes and cone) at the far end. */
+  point: units(SCREW.drillPointLength + SCREW.tipLength),
 };
-export const HALF = { head: NUT.halfWidth, shank: LONG_BOLT.shankRadius, nut: NUT.halfWidth };
+export const HALF = {
+  /** The flange is the widest part of the head. */
+  head: units(SCREW.flangeDiameter / 2),
+  hex: units(sdsHexRadius(SCREW)),
+  shank: units(SCREW.diameter / 2),
+};
 
 /** Enter and exit windows of a title on the progress axis. */
 export function titleWindow(index: number) {
@@ -161,6 +169,9 @@ function distanceToRect(x: number, y: number, rect: Rect) {
 
 type Part = { from: number; to: number; half: number; steps: number; staysInside: boolean };
 
+/** Scroll range in which the whole drill point must be on stage (it may leave at the very start and end). */
+const POINT_VISIBLE = [0.2, 0.8] as const;
+
 const ANGLE_STEP = 4;
 /** Candidate positions of the assembly along its handoff line, as fractions of the stage diagonal. */
 const ALONG = [-0.3, -0.15, 0, 0.15, 0.3];
@@ -170,9 +181,9 @@ const ALONG = [-0.3, -0.15, 0, 0.15, 0.3];
  * (bottom row), the axis runs through the midpoint between the first title's bottom-left corner
  * and the second's top-right corner — the corridor between them. For each allowed angle and a few
  * positions along that line, the scale is the largest at which, at every sampled progress with
- * the rise and swing applied, head, shank and nut keep CLEARANCE_PX from every title on stage at
- * that moment (at its slid position), and head and nut stay inside the stage (the threaded end
- * may run off the edge). The largest fastener wins. Runs on resize only.
+ * the rise and swing applied, head and shank keep CLEARANCE_PX from every title on stage at that
+ * moment (at its slid position), and head and drill point stay inside the stage (the threaded
+ * middle may run off the edge). The largest screw wins. Runs on resize only.
  */
 export function computeAssembly(
   width: number,
@@ -235,11 +246,10 @@ function largestFit(
       const pose = assemblyPose(assembly, progress);
       const ux = Math.cos(pose.angle);
       const uy = Math.sin(pose.angle);
-      const nut = nutTravel(progress);
       const parts: Part[] = [
         { from: -REACH.headTop, to: -REACH.headUnderside, half: HALF.head, steps: 6, staysInside: true },
-        { from: -REACH.headUnderside, to: REACH.tip, half: HALF.shank, steps: 64, staysInside: false },
-        { from: nut - REACH.nutHalfLength, to: nut + REACH.nutHalfLength, half: HALF.nut, steps: 4, staysInside: true },
+        { from: -REACH.headUnderside, to: REACH.tip - REACH.point, half: HALF.shank, steps: 64, staysInside: false },
+        { from: REACH.tip - REACH.point, to: REACH.tip, half: HALF.shank, steps: 8, staysInside: progress >= POINT_VISIBLE[0] && progress <= POINT_VISIBLE[1] },
       ];
       const visible = titlesOnStage(titles, directions, progress, width);
 

@@ -8,12 +8,21 @@ const BASE_SIZE = 28;
 const MAX_SIZE = 84;
 const MAGNET_STRENGTH = 0.25;
 const INTERACTIVE = "a, button, [data-magnetic]";
+/** Dense text lists (the footer) opt out: a seated hex would overlap the neighbouring rows. */
+const PLAIN = "[data-cursor-plain]";
+
+/** The interactive element the cursor should seat on, if any. */
+const seatTarget = (node: Element | null) => {
+  const element = node?.closest<HTMLElement>(INTERACTIVE) ?? null;
+  return element && !element.closest(PLAIN) ? element : null;
+};
 
 /**
  * Hexagonal "Allen socket" cursor. It trails the pointer, seats onto interactive elements
  * (grows to fit, turns 30°), tightens a sixth of a turn on press with a ripple, and lets
- * [data-magnetic] elements lean toward the pointer before springing back. The native cursor
- * stays visible for accessibility.
+ * [data-magnetic] elements lean toward the pointer before springing back. Inside a
+ * [data-cursor-plain] container it only trails the pointer. The native cursor stays visible for
+ * accessibility.
  */
 export function HexCursor() {
   const cursor = useRef<HTMLDivElement>(null);
@@ -74,14 +83,13 @@ export function HexCursor() {
       }
     };
 
-    const hitTest = () =>
-      document.elementFromPoint(pointer.x, pointer.y)?.closest<HTMLElement>(INTERACTIVE) ?? null;
+    const hitTest = () => seatTarget(document.elementFromPoint(pointer.x, pointer.y));
 
     const onMove = (event: PointerEvent) => {
       pointer.x = event.clientX;
       pointer.y = event.clientY;
       gsap.to(element, { autoAlpha: 1, duration: 0.2, overwrite: "auto" });
-      seat((event.target as Element | null)?.closest<HTMLElement>(INTERACTIVE) ?? null);
+      seat(seatTarget(event.target as Element | null));
       track();
     };
 

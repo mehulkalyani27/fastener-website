@@ -9,10 +9,6 @@ import type { SdsSpec } from "@/features/experience/three/specs";
 
 type SdsScrewProps = ThreeElements["group"] & {
   spec: SdsSpec;
-  /** Material props for the screw body (finish). */
-  finish?: ThreeElements["meshPhysicalMaterial"];
-  /** Drill point material, when it differs from the body (e.g. a hardened point). */
-  pointFinish?: ThreeElements["meshPhysicalMaterial"];
   /** Rotation about the screw axis (static screws); animated screws drive `spinRef` instead. */
   spin?: number;
   spinRef?: Ref<Group>;
@@ -23,13 +19,11 @@ type SdsScrewProps = ThreeElements["group"] & {
 
 /**
  * Hex washer head self-drilling screw. The group's origin is the head's underside on the screw
- * axis; the shank points down -y. The bonded washer hangs under the head: its steel ring is fixed
- * to the head, the EPDM ring below it is scaled in y to compress (see epdmPose).
+ * axis; the shank points down -y. A bonded washer, if the spec has one, hangs under the head: its
+ * steel ring is fixed to the head, the EPDM ring below it is scaled in y to compress (see epdmPose).
  */
 export function SdsScrew({
   spec,
-  finish = COATED_SCREW_MATERIAL,
-  pointFinish = finish,
   spin = 0,
   spinRef,
   epdmThickness,
@@ -37,29 +31,46 @@ export function SdsScrew({
   ...group
 }: SdsScrewProps) {
   const geometry = useMemo(() => getSdsGeometry(spec), [spec]);
-  const washer = spec.washer;
-  const epdm = washer ? epdmPose(spec, epdmThickness ?? washer.epdmThickness) : null;
 
   return (
     <group {...group}>
       <group ref={spinRef} rotation-y={spin}>
         <mesh geometry={geometry.body}>
-          <meshPhysicalMaterial {...finish} />
+          <meshPhysicalMaterial {...COATED_SCREW_MATERIAL} />
         </mesh>
         <mesh geometry={geometry.point}>
-          <meshPhysicalMaterial {...pointFinish} />
+          <meshPhysicalMaterial {...COATED_SCREW_MATERIAL} />
         </mesh>
       </group>
-      {washer && geometry.washerSteel && geometry.washerEpdm && epdm && (
-        <>
-          <mesh geometry={geometry.washerSteel} position-y={-washer.steelThickness} scale-y={washer.steelThickness}>
-            <meshPhysicalMaterial {...STEEL_MATERIAL} roughness={0.35} />
-          </mesh>
-          <mesh ref={epdmRef} geometry={geometry.washerEpdm} position-y={epdm.y} scale={epdm.scale}>
-            <meshStandardMaterial {...EPDM_MATERIAL} />
-          </mesh>
-        </>
-      )}
+      <SdsWasher spec={spec} epdmThickness={epdmThickness} epdmRef={epdmRef} />
+    </group>
+  );
+}
+
+type SdsWasherProps = ThreeElements["group"] & {
+  spec: SdsSpec;
+  epdmThickness?: number;
+  epdmRef?: Ref<Mesh>;
+};
+
+/**
+ * The bonded sealing washer under the head: a steel backing ring over an EPDM ring, hanging from
+ * y = 0 (the underside of the head). Renders nothing for a spec without a washer.
+ */
+function SdsWasher({ spec, epdmThickness, epdmRef, ...group }: SdsWasherProps) {
+  const geometry = useMemo(() => getSdsGeometry(spec), [spec]);
+  const washer = spec.washer;
+  if (!washer || !geometry.washerSteel || !geometry.washerEpdm) return null;
+  const epdm = epdmPose(spec, epdmThickness ?? washer.epdmThickness);
+
+  return (
+    <group {...group}>
+      <mesh geometry={geometry.washerSteel} position-y={-washer.steelThickness} scale-y={washer.steelThickness}>
+        <meshPhysicalMaterial {...STEEL_MATERIAL} roughness={0.35} />
+      </mesh>
+      <mesh ref={epdmRef} geometry={geometry.washerEpdm} position-y={epdm.y} scale={epdm.scale}>
+        <meshStandardMaterial {...EPDM_MATERIAL} />
+      </mesh>
     </group>
   );
 }

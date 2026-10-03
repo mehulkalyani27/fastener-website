@@ -5,15 +5,20 @@ import { sectionPath } from "@/data/sections";
 import { contactInfo, mainNavigation, siteConfig, socialLinks } from "@/data/site";
 import { SectionLink } from "@/features/navigation/components/section-link";
 
-const headingClass = "eyebrow text-ink-accent";
+// The eyebrow style, with tighter tracking on phones so "PRODUCT RANGE" stays on one line and every
+// list starts at the same height. Headings and links never wrap; the columns are sized to fit them.
+const headingClass =
+  "text-[0.8125rem] font-medium tracking-[0.2em] whitespace-nowrap text-ink-accent uppercase sm:tracking-[0.3em]";
 const listClass = "mt-5 space-y-1 text-sm text-ink-muted";
-const linkClass = "inline-block py-1 transition-colors hover:text-ink-foreground";
+const linkClass = "inline-block py-1 whitespace-nowrap transition-colors hover:text-ink-foreground";
 const contactLinkClass = "block py-1 transition-colors hover:text-ink-foreground";
 
 export function SiteFooter() {
   return (
-    <footer className="surface-ink">
-      <Container className="grid grid-cols-2 gap-x-6 gap-y-12 py-16 sm:py-20 lg:grid-cols-[1.6fr_1fr_1fr_1.3fr_1fr] lg:gap-x-10">
+    <footer data-cursor-plain className="surface-ink">
+      {/* Column widths are sized so each heading and its longest link fit on one line. Below 360px the
+            first column is narrower so "PRODUCT RANGE" and "Materials & Hardness" still fit beside it. */}
+      <Container className="grid grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-x-4 gap-y-12 py-16 min-[360px]:grid-cols-2 sm:gap-x-6 sm:py-20 lg:grid-cols-[1.5fr_1fr_1.3fr_1.3fr_0.9fr] lg:gap-x-8 xl:gap-x-10">
         <div className="col-span-2 lg:col-span-1">
           <Logo />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-ink-muted">{siteConfig.tagline}</p>

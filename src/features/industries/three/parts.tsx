@@ -18,7 +18,6 @@ import { contextDim, highlightOpacity } from "@/features/industries/lib/scene";
 import { chapterAt, chapterProgress, type Tier } from "@/features/industries/lib/story";
 import { CHAPTER_COUNT } from "@/features/industries/scenes";
 
-type Finish = ThreeElements["meshPhysicalMaterial"];
 type ChapterValue = { progress: RefObject<number>; index: number };
 
 const ChapterContext = createContext<ChapterValue | null>(null);
@@ -78,10 +77,8 @@ export function SectionFace({ x = 0, y, width, height }: { x?: number; y: number
   );
 }
 
-type DrivenScrewProps = { drive: ScrewDrive; finish?: Finish; pointFinish?: Finish };
-
 /** The chapter's hero screw, posed from the drive every frame — the only polished part. */
-export function DrivenScrew({ drive, finish, pointFinish }: DrivenScrewProps) {
+export function DrivenScrew({ drive }: { drive: ScrewDrive }) {
   const time = useChapterTime();
   const screw = useRef<Group>(null);
   const spin = useRef<Group>(null);
@@ -101,18 +98,16 @@ export function DrivenScrew({ drive, finish, pointFinish }: DrivenScrewProps) {
     }
   });
 
-  return <SdsScrew ref={screw} spec={drive.spec} finish={finish} pointFinish={pointFinish} spinRef={spin} epdmRef={epdm} />;
+  return <SdsScrew ref={screw} spec={drive.spec} spinRef={spin} epdmRef={epdm} />;
 }
 
-type InstalledScrewProps = { drive: ScrewDrive; x?: number; z: number; spin: number; finish?: Finish; pointFinish?: Finish };
+type InstalledScrewProps = { drive: ScrewDrive; x?: number; z: number; spin: number };
 
 /** A screw already fixed elsewhere in the assembly (context), seated like the hero ends up. */
-export function InstalledScrew({ drive, x = 0, z, spin, finish, pointFinish }: InstalledScrewProps) {
+export function InstalledScrew({ drive, x = 0, z, spin }: InstalledScrewProps) {
   return (
     <SdsScrew
       spec={drive.spec}
-      finish={finish}
-      pointFinish={pointFinish}
       position={[x, seatedHeadY(drive), z]}
       spin={spin}
       epdmThickness={drive.spec.washer?.epdmMinThickness}

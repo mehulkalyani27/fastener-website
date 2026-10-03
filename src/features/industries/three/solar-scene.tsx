@@ -3,10 +3,8 @@
 import {
   ALUMINIUM_MATERIAL,
   GALVANIZED_STEEL_MATERIAL,
-  HARDENED_POINT_MATERIAL,
   SECTION_FACE_MATERIAL,
   SOLAR_GLASS_MATERIAL,
-  STAINLESS_SCREW_MATERIAL,
 } from "@/features/experience/three/materials";
 import { cPurlinShapes, extrudeAlongX, polygonShape, rectangleShape } from "@/features/experience/three/profiles";
 import type { Tier } from "@/features/industries/lib/story";
@@ -91,7 +89,7 @@ export function SolarScene({ tier }: { tier: Tier }) {
         </group>
       )}
 
-      <DrivenScrew drive={SOLAR_DRIVE} finish={STAINLESS_SCREW_MATERIAL} pointFinish={HARDENED_POINT_MATERIAL} />
+      <DrivenScrew drive={SOLAR_DRIVE} />
       <Burr drive={SOLAR_DRIVE} layerBottom={PURLIN_BOTTOM_DEPTH} y={-t - 0.2} />
       <HighlightRing y={FOOT_TOP_Y + 0.35} radius={SOLAR_SCREW.flangeDiameter / 2 + 1.6} />
     </>
