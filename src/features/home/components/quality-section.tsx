@@ -22,29 +22,39 @@ export function QualitySection() {
           ))}
         </CardGrid>
 
-        <div className="mt-block border-t border-foreground/10 pt-10">
-          <h3 className="eyebrow text-muted">{qualityContent.certificationsTitle}</h3>
-          <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:max-w-3xl lg:grid-cols-3">
-            {qualityContent.certifications.map((certification, index) => (
-              <li
-                key={`${certification}-${index}`}
-                className="flex min-h-20 items-center gap-3 rounded-card border border-border bg-background px-5 py-4 text-sm font-medium shadow-card"
+        <figure
+          data-reveal
+          aria-labelledby="certification-label"
+          className="surface-ink mt-block rounded-card p-8 shadow-raised sm:p-10 lg:p-12"
+        >
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 64 64"
+                className="size-16 shrink-0 text-ink-foreground sm:size-20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinejoin="round"
+                strokeLinecap="round"
               >
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 12 12"
-                  className="size-3.5 shrink-0 text-primary"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
-                  <path d="M6 .8 10.5 3.4v5.2L6 11.2 1.5 8.6V3.4z" />
-                </svg>
-                {certification}
-              </li>
-            ))}
-          </ul>
-        </div>
+                <path d="M32 3 57 17.5v29L32 61 7 46.5v-29z" />
+                <path d="M21 33l8 8 15-17" />
+              </svg>
+              <div>
+                <p id="certification-label" className="eyebrow text-ink-accent">
+                  {qualityContent.certification.label}
+                </p>
+                <p className="mt-3 text-heading font-semibold">{qualityContent.certification.standard}</p>
+                <p className="mt-1 text-lg text-ink-muted">{qualityContent.certification.name}</p>
+              </div>
+            </div>
+            <figcaption className="max-w-md leading-relaxed text-ink-muted lg:border-l lg:border-ink-border lg:pl-10">
+              {qualityContent.certification.note}
+            </figcaption>
+          </div>
+        </figure>
       </Container>
     </Section>
   );

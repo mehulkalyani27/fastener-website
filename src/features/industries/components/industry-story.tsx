@@ -25,6 +25,8 @@ const IndustryCanvas = dynamic(() => perfImport("industries", import("@/features
 
 const TABLET_QUERY = "(min-width: 40rem)";
 const DESKTOP_QUERY = "(min-width: 80rem)";
+/** A phone on its side below the split width (e.g. 568x320): the stacked stage leaves the canvas a sliver. */
+const CRAMPED_QUERY = "(max-width: 39.99rem) and (max-height: 30rem)";
 /** Share of the stage that must be on screen for the story to play. */
 const PLAY_VISIBILITY = 0.35;
 
@@ -49,12 +51,14 @@ function chapterTextOpacity(index: number, t: number) {
  * story's progress 0..1; the HTML text is written from it here and the 3D scene reads the same
  * value each frame, so both always agree. Nothing starts until the canvas has rendered its first
  * frame that drew the model; the clock then runs only while the story is on screen and the tab is
- * visible. Reduced motion, no WebGL and data saver get the plain cards.
+ * visible. Reduced motion, no WebGL, data saver and screens too short to show the scene get the
+ * plain cards.
  */
 export function IndustryStory({ chapters, fallback }: IndustryStoryProps) {
   const track = useRef<HTMLDivElement>(null);
   const textLayer = useRef<HTMLDivElement>(null);
   const canvasBox = useRef<HTMLDivElement>(null);
+  const hoverArea = useRef<HTMLDivElement>(null);
   const progress = useRef(0);
   const [control] = useState(createRenderControl);
   const hydrated = useHydrated();
@@ -62,8 +66,9 @@ export function IndustryStory({ chapters, fallback }: IndustryStoryProps) {
   const split = useMediaQuery(SPLIT_QUERY);
   const tablet = useMediaQuery(TABLET_QUERY);
   const desktop = useMediaQuery(DESKTOP_QUERY);
+  const cramped = useMediaQuery(CRAMPED_QUERY);
   const pageVisible = usePageVisible();
-  const story = hydrated && canRender;
+  const story = hydrated && canRender && !cramped;
   const tier: Tier = desktop && split ? "desktop" : tablet ? "tablet" : "mobile";
   const texts = INDUSTRY_SCENES.map((scene) => chapters.find((chapter) => chapter.slug === scene.slug)!);
 
@@ -78,7 +83,7 @@ export function IndustryStory({ chapters, fallback }: IndustryStoryProps) {
   const [focused, setFocused] = useState(false);
   const [announcement, setAnnouncement] = useState("");
   const [ready, setReady] = useState(false);
-  const mounted = useCanvasMount("industries", { near, ready, skip: hydrated && !canRender });
+  const mounted = useCanvasMount("industries", { near, ready, skip: hydrated && (!canRender || cramped) });
   const onReady = useCallback(() => setReady(true), []);
   // The story holds still while the pointer is over it or keyboard focus is inside it (WCAG 2.2.2).
   const running = story && onScreen && pageVisible && ready && !hovered && !focused;
@@ -127,10 +132,52 @@ export function IndustryStory({ chapters, fallback }: IndustryStoryProps) {
 
   const { goTo } = usePlayback({ count: CHAPTER_COUNT, running, ready, progress, control, onFrame: render });
 
-  // Mouse only: a touch tap must not leave the story held. Focus counts only when it comes from the
-  // keyboard (`:focus-visible`), so clicking a step does not freeze playback until focus moves away.
-  const onPointerEnter = (event: PointerEvent) => setHovered(event.pointerType === "mouse");
-  const onPointerLeave = () => setHovered(false);
+  // Hover holds the story only while a mouse or trackpad pointer is directly over the 3D canvas box
+  // (not the text, controls or spacing around it). Touch and pen never count: they have no hover,
+  // and their simulated enter/leave events would leave the story stuck paused.
+  const pointer = useRef({ x: 0, y: 0 });
+  const onCanvasPointerEnter = (event: PointerEvent) => {
+    if (event.pointerType !== "mouse") return;
+    pointer.current = { x: event.clientX, y: event.clientY };
+    setHovered(true);
+  };
+  const onCanvasPointerMove = (event: PointerEvent) => {
+    if (event.pointerType === "mouse") pointer.current = { x: event.clientX, y: event.clientY };
+  };
+  const onCanvasPointerLeave = () => setHovered(false);
+  // A hover must not outlive its cause: the page scrolled the canvas away from under a still cursor
+  // (browsers do not always report that), the user switched to touch or another window, or the
+  // section left the screen.
+  if (hovered && !onScreen) setHovered(false);
+  useEffect(() => {
+    if (!hovered) return;
+    let frame = 0;
+    const release = () => setHovered(false);
+    const recheck = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const under = document.elementFromPoint(pointer.current.x, pointer.current.y);
+        if (!under || !hoverArea.current?.contains(under)) setHovered(false);
+      });
+    };
+    const onPointerDown = (event: globalThis.PointerEvent) => {
+      if (event.pointerType !== "mouse") setHovered(false);
+    };
+    window.addEventListener("scroll", recheck, { capture: true, passive: true });
+    window.addEventListener("pointerdown", onPointerDown, { capture: true, passive: true });
+    window.addEventListener("blur", release);
+    document.addEventListener("visibilitychange", release);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", recheck, { capture: true });
+      window.removeEventListener("pointerdown", onPointerDown, { capture: true });
+      window.removeEventListener("blur", release);
+      document.removeEventListener("visibilitychange", release);
+    };
+  }, [hovered]);
+
+  // Keyboard focus also holds the story (WCAG 2.2.2), but only when it comes from the keyboard
+  // (`:focus-visible`), so clicking a step does not freeze playback until focus moves away.
   const onFocus = (event: FocusEvent) => setFocused(event.target.matches(":focus-visible"));
   const onBlur = (event: FocusEvent) => {
     if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
@@ -149,13 +196,18 @@ export function IndustryStory({ chapters, fallback }: IndustryStoryProps) {
       {story ? (
         <div
           className="h-[calc(100svh-var(--spacing-header))]"
-          onPointerEnter={onPointerEnter}
-          onPointerLeave={onPointerLeave}
           onFocus={onFocus}
           onBlur={onBlur}
         >
           <Container className="grid h-full grid-rows-[minmax(0,1fr)_auto] gap-4 py-4 sm:gap-6 sm:py-6 split:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] split:grid-rows-1 split:items-center split:gap-12 split:py-10 short:py-4">
-            <div aria-hidden="true" className="relative min-h-0 split:order-2 split:h-full">
+            <div
+              ref={hoverArea}
+              aria-hidden="true"
+              className="relative min-h-0 split:order-2 split:h-full"
+              onPointerEnter={onCanvasPointerEnter}
+              onPointerMove={onCanvasPointerMove}
+              onPointerLeave={onCanvasPointerLeave}
+            >
               {/* Invisible until the first usable frame, then faded in by the playback clock. */}
               <div ref={canvasBox} className="absolute inset-0 opacity-0">
                 {mounted && (
@@ -181,10 +233,10 @@ export function IndustryStory({ chapters, fallback }: IndustryStoryProps) {
                     data-chapter-title={index}
                     className={`col-start-1 row-start-1 ${index ? "opacity-0" : ""}`}
                   >
-                    <h3 className="text-2xl leading-tight font-semibold tracking-[-0.02em] sm:text-heading short:text-2xl">
+                    <h3 className="text-2xl leading-tight font-semibold tracking-[-0.02em] sm:text-heading short:text-xl">
                       {text.industry}
                     </h3>
-                    <p className="mt-3 text-lg text-muted max-sm:sr-only short:mt-1.5 short:text-base">{text.application}</p>
+                    <p className="mt-3 text-lg text-muted max-sm:sr-only short:mt-1 short:text-sm">{text.application}</p>
                   </div>
                 ))}
               </div>
