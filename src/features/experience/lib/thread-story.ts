@@ -49,8 +49,8 @@ const units = (mm: number) => mm / MM_PER_UNIT;
 const SPIN_TURNS = 4.5;
 export const screwSpin = (progress: number) => -(progress - 0.5) * SPIN_TURNS * Math.PI * 2;
 
-/** Pose reference point: this far from the head's underside along the axis (model units). */
-export const REFERENCE = units(30);
+/** Pose reference point: this far from the head's underside along the axis (model units), a bit under half way down. */
+export const REFERENCE = units(SCREW.length * 0.46);
 
 export type ThreadLayout = keyof typeof THREAD_STORY.angle;
 export type Rect = { left: number; top: number; right: number; bottom: number };
@@ -80,10 +80,13 @@ export const REACH = {
   tip: units(SCREW.length) - REFERENCE,
   /** Length of the drill point (flutes and cone) at the far end. */
   point: units(SCREW.drillPointLength + SCREW.tipLength),
+  /** Thickness of the sealing washer under the flange. */
+  washer: units((SCREW.washer?.steelThickness ?? 0) + (SCREW.washer?.epdmThickness ?? 0)),
 };
 export const HALF = {
-  /** The flange is the widest part of the head. */
-  head: units(SCREW.flangeDiameter / 2),
+  /** The widest part of the head end: the washer if there is one, otherwise the flange. */
+  head: units(Math.max(SCREW.flangeDiameter, SCREW.washer?.diameter ?? 0) / 2),
+  flange: units(SCREW.flangeDiameter / 2),
   hex: units(sdsHexRadius(SCREW)),
   shank: units(SCREW.diameter / 2),
 };
@@ -247,7 +250,7 @@ function largestFit(
       const ux = Math.cos(pose.angle);
       const uy = Math.sin(pose.angle);
       const parts: Part[] = [
-        { from: -REACH.headTop, to: -REACH.headUnderside, half: HALF.head, steps: 6, staysInside: true },
+        { from: -REACH.headTop, to: -REACH.headUnderside + REACH.washer, half: HALF.head, steps: 6, staysInside: true },
         { from: -REACH.headUnderside, to: REACH.tip - REACH.point, half: HALF.shank, steps: 64, staysInside: false },
         { from: REACH.tip - REACH.point, to: REACH.tip, half: HALF.shank, steps: 8, staysInside: progress >= POINT_VISIBLE[0] && progress <= POINT_VISIBLE[1] },
       ];

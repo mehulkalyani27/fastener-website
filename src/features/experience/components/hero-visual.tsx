@@ -41,7 +41,10 @@ export function HeroVisual() {
   );
 }
 
-/** Flat self-drilling hex head screw (hex head on a flange, threaded shank, fluted drill point) for when WebGL is unavailable. */
+/**
+ * Flat self-drilling hex head screw for when WebGL is unavailable: hex head on its flange, a black
+ * EPDM sealing washer under it, a threaded shank and a long, fluted Tek drill point.
+ */
 function ScrewIllustration() {
   return (
     <svg
@@ -53,17 +56,19 @@ function ScrewIllustration() {
       strokeLinejoin="round"
     >
       {/* Hex head (side view: three faces) on its flange */}
-      <path d="M66 14h68l6 12v26l-6 8H66l-6-8V26z" />
-      <path d="M92 14v46M108 14v46" opacity="0.6" />
-      <path d="M52 60h96a4 4 0 0 1 4 4v6H48v-6a4 4 0 0 1 4-4z" />
+      <path d="M77 20h46l3 4v19l-3 4H77l-3-4V24z" />
+      <path d="M92 20v27M108 20v27" opacity="0.6" />
+      <path d="M71 47h58a2 2 0 0 1 2 2v4H69v-4a2 2 0 0 1 2-2z" />
+      {/* EPDM sealing washer directly under the flange */}
+      <rect x="60" y="53" width="80" height="13" rx="3" fill="currentColor" fillOpacity="0.4" />
       {/* Threaded shank */}
-      <path d="M76 70v178M124 70v178" />
-      {Array.from({ length: 16 }, (_, index) => (
-        <path key={index} d={`M76 ${88 + index * 10}l48 -6`} opacity="0.6" />
+      <path d="M86 66v129M114 66v129" />
+      {Array.from({ length: 15 }, (_, index) => (
+        <path key={index} d={`M86 ${76 + index * 8}l28 -5`} opacity="0.6" />
       ))}
-      {/* Fluted drill point */}
-      <path d="M76 248l24 66 24-66" />
-      <path d="M86 262l28 -8M92 280l16 -5" opacity="0.6" />
+      {/* Drill point: long twisted flutes ending in a chisel tip */}
+      <path d="M86 195v70l14 15 14-15v-70" />
+      <path d="M86 212l28 -9M86 232l28 -9M88 252l24 -8" opacity="0.7" />
     </svg>
   );
 }

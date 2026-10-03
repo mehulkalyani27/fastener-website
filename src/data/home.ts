@@ -41,7 +41,10 @@ export const productsContent = {
   title: "Products",
   description:
     "Hex Head Self-Drilling Screws (SDS) in lengths from 19 mm to 65 mm, engineered for fast installation without pre-drilling.",
-  cta: { label: "Enquire About Products", href: "/contact" },
+  cta: { label: "Request 5.5mm Sample Pack", href: "/contact" },
+  datasheet: process.env.NEXT_PUBLIC_TDS_URL
+    ? { label: "Download Technical Data Sheet (TDS)", href: process.env.NEXT_PUBLIC_TDS_URL }
+    : null,
 };
 
 export const industriesContent = {
@@ -62,7 +65,7 @@ export const capabilitiesContent = {
     {
       title: "Custom Variations",
       description:
-        "Options for customized drill flute lengths (Drill Point #3, #4, #5) depending on steel thickness (up to 12.5mm).",
+        "Drill Point #3 for steel up to 4.5 mm; #4 and #5 points for heavy-duty steel up to 12.5 mm.",
     },
     {
       title: "Finishes & Coatings",
@@ -72,12 +75,12 @@ export const capabilitiesContent = {
     {
       title: "Packaging & Delivery",
       description:
-        "Standard box packs (500 / 1000 pcs), bulk carton packs, and custom labeling for distributors.",
+        "Box packs of 1,000 pcs (19–25 mm), 500 pcs (35–50 mm) and 250–300 pcs (65 mm), plus custom labeling for distributors.",
     },
     {
       title: "Technical Support",
       description:
-        "Guidance on drill speeds (RPM), driving torque limits, and thickness capacities to prevent flute clogging or head breakage.",
+        "Drive at 1,500–2,200 RPM and respect the maximum seating torque to protect the EPDM washer and prevent head breakage.",
     },
     {
       title: "Stocking Arrangements",
@@ -135,11 +138,11 @@ export const whyChooseUsContent = {
     {
       title: "Focused Range",
       description:
-        "Standardized 19 mm to 65 mm range engineered specifically for light to heavy steel applications.",
+        "A single ST 5.5 (#12) diameter in 19 mm to 65 mm lengths, for light to heavy steel applications.",
     },
     {
       title: "Customisation",
-      description: "Available in varied drill points (#3 to #5), special lengths, and protective finishes.",
+      description: "Available in drill points #3 to #5 and a choice of protective finishes.",
     },
     {
       title: "Delivery & Lead Times",

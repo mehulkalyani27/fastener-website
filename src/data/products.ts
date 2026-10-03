@@ -2,27 +2,23 @@ import type { ProductCategory } from "@/types/content";
 
 export const stockedLengths = [19, 25, 35, 45, 50, 65] as const;
 
-export const screwDiameters = ["ST 4.2 / #8", "ST 4.8 / #10", "ST 5.5 / #12", "ST 6.3 / #14"] as const;
-
-const first = stockedLengths[0];
-const last = stockedLengths[stockedLengths.length - 1];
-const lengthsList = `${stockedLengths.slice(0, -1).join(", ")} and ${last} mm`;
+const lengthsList = `${stockedLengths.slice(0, -1).join(" mm, ")} mm, and ${stockedLengths[stockedLengths.length - 1]} mm`;
 
 export const productCategories: ProductCategory[] = [
   {
     slug: "size-range",
     name: "Size Range",
-    description: `Lengths from ${first} mm to ${last} mm. Diameters: ${screwDiameters.join(", ")}.`,
+    description: `Diameter: ST 5.5 (#12 gauge) exclusively. Stocked Lengths: ${lengthsList}.`,
   },
   {
     slug: "stocked-lengths",
     name: "Stocked Lengths",
-    description: `Ready inventory in ${lengthsList} for fast dispatch.`,
+    description: "Ready inventory across every stocked length for fast dispatch.",
   },
   {
     slug: "head-type",
     name: "Head Type",
-    description: "Hex Flange / Hex Washer Head with optional EPDM sealing washers.",
+    description: "Hex Washer Head, 8 mm (5/16\") across flats (A.F.), 14 TPI, with integrated 16 mm / 19 mm EPDM bonded washers.",
   },
   {
     slug: "materials",
@@ -34,5 +30,25 @@ export const productCategories: ProductCategory[] = [
     slug: "finishes",
     name: "Finishes & Coatings",
     description: "Yellow/Clear Zinc Plated, Ruspert / Silver Slide Coating, Class 3 / Class 4 Armor Coatings.",
+  },
+];
+
+export const productSpecifications: ProductCategory[] = [
+  {
+    slug: "drill-points",
+    name: "Drill Point Capacity",
+    description:
+      "ST 5.5 with a #3 point for standard purlin and roofing steel up to 4.5 mm; #4 and #5 points for heavy-duty steel up to 12.5 mm.",
+  },
+  {
+    slug: "installation",
+    name: "Installation Guidance",
+    description:
+      "Drive at 1,500–2,200 RPM and stay within the maximum recommended seating torque to avoid damaging the EPDM washer.",
+  },
+  {
+    slug: "packaging",
+    name: "Packaging",
+    description: "19 mm – 25 mm: 1,000 pcs per box. 35 mm – 50 mm: 500 pcs per box. 65 mm: 250–300 pcs per box.",
   },
 ];
