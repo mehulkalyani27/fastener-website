@@ -34,14 +34,15 @@ export function HeroVisual() {
         near && <HeroScene progress={progress} active={inView} layout={split ? "split" : "stacked"} />
       ) : (
         <div className="flex h-full items-center justify-center py-8 split:ml-auto split:w-1/2 split:py-16">
-          <BoltIllustration />
+          <ScrewIllustration />
         </div>
       )}
     </div>
   );
 }
 
-function BoltIllustration() {
+/** Flat self-drilling hex head screw (hex head on a flange, threaded shank, fluted drill point) for when WebGL is unavailable. */
+function ScrewIllustration() {
   return (
     <svg
       viewBox="0 0 200 320"
@@ -49,12 +50,20 @@ function BoltIllustration() {
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
+      strokeLinejoin="round"
     >
-      <path d="M50 20h100l12 20v40l-12 20H50L38 80V40z" />
-      <path d="M72 100v200l28 16 28-16V100" />
-      {Array.from({ length: 14 }, (_, index) => (
-        <path key={index} d={`M72 ${170 + index * 9}l56 -6`} opacity="0.6" />
+      {/* Hex head (side view: three faces) on its flange */}
+      <path d="M66 14h68l6 12v26l-6 8H66l-6-8V26z" />
+      <path d="M92 14v46M108 14v46" opacity="0.6" />
+      <path d="M52 60h96a4 4 0 0 1 4 4v6H48v-6a4 4 0 0 1 4-4z" />
+      {/* Threaded shank */}
+      <path d="M76 70v178M124 70v178" />
+      {Array.from({ length: 16 }, (_, index) => (
+        <path key={index} d={`M76 ${88 + index * 10}l48 -6`} opacity="0.6" />
       ))}
+      {/* Fluted drill point */}
+      <path d="M76 248l24 66 24-66" />
+      <path d="M86 262l28 -8M92 280l16 -5" opacity="0.6" />
     </svg>
   );
 }

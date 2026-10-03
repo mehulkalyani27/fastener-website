@@ -72,7 +72,7 @@ function measureTitles(stage: HTMLElement): Rect[] | null {
   });
 }
 
-/** Flat stand-in drawn at the assembly's mid-sequence pose when WebGL is unavailable. */
+/** Flat stand-in for the self-drilling screw, drawn at the assembly's mid-sequence pose when WebGL is unavailable. */
 function FlatFastener({ assembly }: { assembly: Assembly }) {
   const k = assembly.pxPerUnit;
   const pose = assemblyPose(assembly, 0.5);
@@ -90,8 +90,7 @@ function FlatFastener({ assembly }: { assembly: Assembly }) {
   return (
     <div aria-hidden="true" className="absolute size-0" style={style}>
       {bar(-REACH.headUnderside, REACH.tip, HALF.shank, "rounded-sm bg-ink-accent/35")}
-      {bar(-REACH.headTop, -REACH.headUnderside, HALF.head, "rounded-sm bg-ink-accent/60")}
-      {bar(-REACH.nutHalfLength, REACH.nutHalfLength, HALF.nut, "rounded-sm bg-ink-accent")}
+      {bar(-REACH.flangeTop, -REACH.headUnderside, HALF.head, "rounded-sm bg-ink-accent/60")}
     </div>
   );
 }
@@ -99,8 +98,8 @@ function FlatFastener({ assembly }: { assembly: Assembly }) {
 /**
  * Pinned storytelling stage for the Thread section. One ScrollTrigger maps the track's scroll
  * position to progress 0..1. From that single value: titles take their opacity and slide from
- * titleState, the scene lifts the whole fastener up the stage (assemblyPose) and threads the nut
- * along it. The assembly's scale, angle and anchor are fitted to the measured titles on resize.
+ * titleState, the scene lifts the whole screw up the stage (assemblyPose) and turns it about its
+ * axis. The assembly's scale, angle and anchor are fitted to the measured titles on resize.
  * Reduced motion (and the server render) gets a plain list.
  */
 export function ThreadedStory({ panels }: { panels: ThreadPanel[] }) {

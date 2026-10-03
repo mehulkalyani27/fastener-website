@@ -23,7 +23,6 @@ import type { Tier } from "@/features/industries/lib/story";
 export const DUCT = { height: 300, width: 400, wall: 0.9, top: 70 };
 /** Angle bracket: leg on the duct along x, outstanding leg at its top end out along +y. */
 export const BRACKET = { thickness: 3, from: -20, to: 30, outstand: 42, halfWidth: 25 };
-export const HANGER_ROD = { radius: 4, y: 25, z: -12.5, from: 14, to: 900 };
 export const HVAC_SCREW = BRACKET_SDS_VISUAL;
 
 /** Gap between bracket and duct before the screw clamps them. */
