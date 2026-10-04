@@ -5,7 +5,7 @@ import { CardGrid } from "@/components/ui/card-grid";
 import { SectionHeader } from "@/components/ui/section-header";
 import { productsContent } from "@/data/home";
 import { productCategories, productSpecifications } from "@/data/products";
-import { SectionLink } from "@/features/navigation/components/section-link";
+import { SampleRequestLink } from "@/features/contact/components/sample-request-link";
 
 export function ProductsSection() {
   return (
@@ -23,12 +23,12 @@ export function ProductsSection() {
             </li>
           ))}
           <li className="flex">
-            <div className="surface-ink flex w-full flex-col justify-between gap-10 rounded-card p-6 shadow-card sm:p-7">
+            <div data-contact-context="sample-pack" className="surface-ink flex w-full flex-col justify-between gap-10 rounded-card p-6 shadow-card sm:p-7">
               <span aria-hidden="true" className="eyebrow text-ink-accent">
                 Sample Pack
               </span>
               <div className="flex flex-col gap-4">
-                <SectionLink
+                <SampleRequestLink
                   href={productsContent.cta.href}
                   className="group flex items-end justify-between gap-4 text-lg font-semibold tracking-[-0.01em]"
                 >
@@ -43,7 +43,7 @@ export function ProductsSection() {
                   >
                     <path d="M2 8h12M9 3l5 5-5 5" />
                   </svg>
-                </SectionLink>
+                </SampleRequestLink>
                 {productsContent.datasheet && (
                   <a
                     href={productsContent.datasheet.href}

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { siteConfig } from "@/data/site";
+import { ContactLauncher } from "@/features/contact/components/contact-launcher";
 import { ExperienceLayer } from "@/features/experience/components/experience-layer";
 import { SkipLink } from "@/features/navigation/components/skip-link";
 import "./globals.css";
@@ -50,6 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <SiteFooter />
+        <ContactLauncher />
         <ExperienceLayer />
       </body>
     </html>

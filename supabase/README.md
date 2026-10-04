@@ -25,7 +25,7 @@ email failures; the inquiry is already safely stored.
 3. **Function secrets** (use one random string for `WEBHOOK_SECRET`, e.g. `openssl rand -hex 32`):
    ```bash
    supabase secrets set RESEND_API_KEY=re_... WEBHOOK_SECRET=<random> \
-     INQUIRY_TO_EMAIL=info@sds-metacore.com \
+     INQUIRY_TO_EMAIL=metacorefasteners@gmail.com \
      INQUIRY_FROM_EMAIL="Metacore Fasteners <inquiries@sds-metacore.com>"
    supabase functions deploy send-inquiry-email --no-verify-jwt
    ```

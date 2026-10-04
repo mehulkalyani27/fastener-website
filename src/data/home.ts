@@ -41,7 +41,7 @@ export const productsContent = {
   title: "Products",
   description:
     "Hex Head Self-Drilling Screws (SDS) in lengths from 19 mm to 65 mm, engineered for fast installation without pre-drilling.",
-  cta: { label: "Request 5.5mm Sample Pack", href: "/contact" },
+  cta: { label: "Request Sample Pack", href: "/contact" },
   datasheet: process.env.NEXT_PUBLIC_TDS_URL
     ? { label: "Download Technical Data Sheet (TDS)", href: process.env.NEXT_PUBLIC_TDS_URL }
     : null,
@@ -163,10 +163,29 @@ export const contactContent = {
   title: "Get in Touch",
   description:
     "Tell us the screw size, coating and quantity you need, or ask for a sample pack, and our team will get back to you.",
+  callLabel: "Call Us",
+  whatsappLabel: "WhatsApp",
   submitLabel: "Send Inquiry",
   sendingLabel: "Sending…",
   successMessage: "Thank you. Your inquiry has been sent, and we'll get back to you soon.",
   invalidMessage: "Please check the highlighted fields.",
-  errorMessage: "We couldn't send your inquiry. Please try again in a moment, or email us directly.",
-  rateLimitedMessage: "You've sent several inquiries recently. Please try again later, or email us directly.",
+  errorMessage: "We couldn't send your inquiry. Please try again in a moment, or message us on WhatsApp.",
+  rateLimitedMessage: "You've sent several inquiries recently. Please try again later, or message us on WhatsApp.",
+  fallbackLabel: "Send it on WhatsApp instead",
+  samplePackMessage:
+    "I'd like to request a sample pack of your ST 5.5 self-drilling screws. Lengths or application I have in mind: ",
+};
+
+/** Opening WhatsApp message by where the visitor is: a section, or a marked block (data-contact-context). */
+export const whatsappMessages = {
+  home: "Hello Metacore Fasteners, I'd like to know more about your self-drilling screws.",
+  about: "Hello Metacore Fasteners, I'd like to know more about your company and manufacturing.",
+  products:
+    "Hello Metacore Fasteners, I'm interested in your ST 5.5 Hex Head Self-Drilling Screws. Could you share pricing and stocked lengths?",
+  "sample-pack": "Hello Metacore Fasteners, I'd like to request a sample pack of your self-drilling screws.",
+  industries:
+    "Hello Metacore Fasteners, I'm looking for self-drilling screws for roofing, pre-engineered buildings or industrial fastening. Could you advise?",
+  quality: "Hello Metacore Fasteners, I'd like to know more about your quality standards and coatings.",
+  quote: "Hello Metacore Fasteners, I'd like a bulk quote for self-drilling screws. What details do you need?",
+  contact: "Hello Metacore Fasteners, I'd like to know more about your self-drilling screws.",
 };

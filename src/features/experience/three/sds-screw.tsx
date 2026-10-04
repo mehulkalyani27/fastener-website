@@ -3,7 +3,7 @@
 import type { ThreeElements } from "@react-three/fiber";
 import { type Ref, useMemo } from "react";
 import type { Group, Mesh } from "three";
-import { COATED_SCREW_MATERIAL, EPDM_MATERIAL, STEEL_MATERIAL } from "@/features/experience/three/materials";
+import { COATED_SCREW_MATERIAL, EPDM_MATERIAL, MARK_MATERIAL, STEEL_MATERIAL } from "@/features/experience/three/materials";
 import { getSdsGeometry } from "@/features/experience/three/sds-geometry";
 import type { SdsSpec } from "@/features/experience/three/specs";
 
@@ -40,6 +40,9 @@ export function SdsScrew({
         </mesh>
         <mesh geometry={geometry.point}>
           <meshPhysicalMaterial {...COATED_SCREW_MATERIAL} />
+        </mesh>
+        <mesh geometry={geometry.mark}>
+          <meshStandardMaterial {...MARK_MATERIAL} />
         </mesh>
       </group>
       <SdsWasher spec={spec} epdmThickness={epdmThickness} epdmRef={epdmRef} />

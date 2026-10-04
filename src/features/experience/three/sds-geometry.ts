@@ -1,10 +1,15 @@
 import { type BufferGeometry, ConeGeometry, CylinderGeometry, ExtrudeGeometry, Path, Shape, TubeGeometry } from "three";
 import { perfSpan } from "@/features/experience/lib/perf";
+import { brandMark } from "@/features/experience/three/brand-mark";
 import { HelixCurve, hexPrism, merge } from "@/features/experience/three/geometry";
-import { type SdsSpec, sdsCoreRadius, sdsThreadedLength } from "@/features/experience/three/specs";
+import { type SdsSpec, sdsCoreRadius, sdsHeadTopHeight, sdsThreadedLength } from "@/features/experience/three/specs";
 
 const RADIAL = 40;
 const HEAD_BEVEL = 0.3;
+
+/** Width of the logo stamp and how far it sits above the head top (stops z-fighting). */
+const MARK_WIDTH = 4.2;
+const MARK_LIFT = 0.02;
 
 const DEFAULT_FLUTES = { depth: 0.5, turns: 1, radius: 1.02 };
 
@@ -63,6 +68,8 @@ export type SdsGeometry = {
   body: BufferGeometry;
   /** Drill flutes and tip — separate so a bi-metal screw can use a second material. */
   point: BufferGeometry;
+  /** Logo stamp on top of the head. */
+  mark: BufferGeometry;
   washerSteel?: BufferGeometry;
   washerEpdm?: BufferGeometry;
 };
@@ -96,11 +103,15 @@ function createSdsGeometry(spec: SdsSpec): SdsGeometry {
   tip.rotateX(Math.PI);
   tip.translate(0, -threaded - spec.drillPointLength - spec.tipLength / 2, 0);
 
+  const mark = brandMark(MARK_WIDTH);
+  mark.translate(0, sdsHeadTopHeight(spec) + MARK_LIFT, 0);
+
   const washer = spec.washer;
   const bore = spec.diameter / 2 + 0.15;
   return {
     body: merge([flange, head, shank, thread]),
     point: merge([flutes, tip]),
+    mark,
     washerSteel: washer && washer.steelThickness > 0 ? ring(washer.diameter / 2, bore) : undefined,
     washerEpdm: washer ? ring(washer.diameter / 2, bore) : undefined,
   };

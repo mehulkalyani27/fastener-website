@@ -1,3 +1,4 @@
+import { LOGO_MARK_PATHS } from "@/components/layout/logo-mark-paths";
 import { SectionLink } from "@/features/navigation/components/section-link";
 import { siteConfig } from "@/data/site";
 
@@ -15,10 +16,9 @@ const tones = {
 export function LogoMark({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 200 208" aria-hidden="true" fill="currentColor" className={className}>
-      <path d="M0,0 L82.2,61.8 L60,78.6 L30,56 V208 H0 Z" />
-      <path d="M191.4,0 H200 V31.4 L91,112.1 V208 H61 V96.6 Z" />
-      <path d="M200,62 L170,84.2 V208 H200 Z" />
-      <path d="M142,105 V142 L61,202 V165.3 Z" />
+      {LOGO_MARK_PATHS.map((d) => (
+        <path key={d} d={d} />
+      ))}
     </svg>
   );
 }

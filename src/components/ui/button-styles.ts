@@ -1,6 +1,7 @@
 export const buttonVariants = {
   primary: "bg-primary text-primary-foreground shadow-card hover:bg-primary-hover",
   secondary: "border border-border bg-background text-foreground hover:border-muted/40 hover:bg-surface",
+  whatsapp: "bg-whatsapp text-white shadow-card hover:bg-whatsapp-hover",
   outline: "border border-ink-accent/60 text-ink-foreground hover:border-ink-accent hover:bg-ink-border",
 };
 

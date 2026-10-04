@@ -1,12 +1,16 @@
 "use client";
 
-import { type FormEvent, useActionState, useRef, useState } from "react";
+import { type FormEvent, useActionState, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { buttonClassName } from "@/components/ui/button-styles";
 import { TextAreaField, TextField } from "@/components/ui/form-field";
 import { PhoneField } from "@/features/contact/components/phone-field";
 import { contactContent } from "@/data/home";
+import { whatsappLink } from "@/data/site";
 import { submitInquiry } from "@/features/contact/actions";
 import type { InquiryErrors } from "@/features/contact/client-validation";
+import { fallbackMessage } from "@/features/contact/lib/fallback";
+import { isSamplePackSearch, setInquiryIntent, useInquiryIntent } from "@/features/contact/lib/inquiry-intent";
 import { CONTACT_REQUIRED_MESSAGE, INQUIRY_LIMITS } from "@/features/contact/rules";
 import type { InquiryField, InquiryFormState, InquiryValues } from "@/features/contact/types";
 
@@ -44,8 +48,26 @@ export function ContactForm() {
   const values = state.values;
   const needsContact = errors.email === CONTACT_REQUIRED_MESSAGE;
   const checkFailed = useRef(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const lastPrefill = useRef("");
+  const intent = useInquiryIntent();
   const hasErrorMessage = clientErrors ? invalidFields.length > 0 : state.status === "error";
+  const deliveryFailed = !clientErrors && state.status === "error" && !state.fieldErrors;
   const message = clientErrors ? (invalidFields.length > 0 ? contactContent.invalidMessage : "") : state.message;
+
+  useEffect(() => {
+    if (isSamplePackSearch(window.location.search)) setInquiryIntent(contactContent.samplePackMessage);
+  }, []);
+
+  // The sample-pack action fills the message; text the visitor already wrote is kept, with the new text after it.
+  useEffect(() => {
+    if (!intent?.message) return;
+    const field = formRef.current?.elements.namedItem("message");
+    if (!(field instanceof HTMLTextAreaElement)) return;
+    const typed = field.value.trim();
+    field.value = !typed || typed === lastPrefill.current.trim() ? intent.message : `${field.value.trimEnd()}\n\n${intent.message}`;
+    lastPrefill.current = intent.message;
+  }, [intent]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     const form = event.currentTarget;
@@ -86,6 +108,7 @@ export function ContactForm() {
 
   return (
     <form
+      ref={formRef}
       action={formAction}
       noValidate
       onSubmit={handleSubmit}
@@ -150,6 +173,16 @@ export function ContactForm() {
           {message}
         </p>
       </div>
+      {deliveryFailed && state.values && (
+        <a
+          href={whatsappLink(fallbackMessage(state.values))}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonClassName("secondary", "w-full sm:col-span-2 sm:w-fit")}
+        >
+          {contactContent.fallbackLabel}
+        </a>
+      )}
     </form>
   );
 }
