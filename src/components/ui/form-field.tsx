@@ -1,19 +1,30 @@
 import type { ComponentPropsWithoutRef } from "react";
 
-const controlClassName =
-  "w-full rounded-control border border-border bg-background px-4 text-base text-foreground shadow-card placeholder:text-muted/60 transition-[border-color] duration-200 hover:border-muted/50 focus:border-primary";
+export const controlClassName =
+  "w-full rounded-control border border-border bg-background px-4 text-base text-foreground shadow-card placeholder:text-muted/60 transition-[border-color] duration-200 hover:border-muted/50 focus:border-primary aria-invalid:border-danger";
 
 type FieldProps = {
   id: string;
   label: string;
   className?: string;
+  /** Validation message, shown under the field and linked to it for assistive technology. */
+  error?: string;
 };
+
+export function FieldError({ id, error }: { id: string; error?: string }) {
+  return error ? (
+    <p id={`${id}-error`} className="mt-1.5 text-sm text-danger">
+      {error}
+    </p>
+  ) : null;
+}
 
 export function TextField({
   id,
   label,
   className = "",
   type = "text",
+  error,
   ...props
 }: FieldProps & Omit<ComponentPropsWithoutRef<"input">, "id" | "className">) {
   return (
@@ -21,7 +32,16 @@ export function TextField({
       <label htmlFor={id} className="block text-sm font-medium">
         {label}
       </label>
-      <input id={id} name={id} type={type} className={`mt-2 min-h-12 ${controlClassName}`} {...props} />
+      <input
+        id={id}
+        name={id}
+        type={type}
+        className={`mt-2 min-h-12 ${controlClassName}`}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
+        {...props}
+      />
+      <FieldError id={id} error={error} />
     </div>
   );
 }
@@ -31,6 +51,7 @@ export function TextAreaField({
   label,
   className = "",
   rows = 4,
+  error,
   ...props
 }: FieldProps & Omit<ComponentPropsWithoutRef<"textarea">, "id" | "className">) {
   return (
@@ -43,8 +64,11 @@ export function TextAreaField({
         name={id}
         rows={rows}
         className={`mt-2 min-h-32 resize-y py-3 ${controlClassName}`}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
         {...props}
       />
+      <FieldError id={id} error={error} />
     </div>
   );
 }

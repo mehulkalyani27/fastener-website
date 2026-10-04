@@ -164,4 +164,9 @@ export const contactContent = {
   description:
     "Tell us the screw size, coating and quantity you need, or ask for a sample pack, and our team will get back to you.",
   submitLabel: "Send Inquiry",
+  sendingLabel: "Sending…",
+  successMessage: "Thank you. Your inquiry has been sent, and we'll get back to you soon.",
+  invalidMessage: "Please check the highlighted fields.",
+  errorMessage: "We couldn't send your inquiry. Please try again in a moment, or email us directly.",
+  rateLimitedMessage: "You've sent several inquiries recently. Please try again later, or email us directly.",
 };
