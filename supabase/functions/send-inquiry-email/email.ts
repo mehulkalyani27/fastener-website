@@ -2,8 +2,8 @@ export type Inquiry = {
   id: string;
   created_at: string;
   name: string;
-  phone: string;
-  email: string;
+  phone: string | null;
+  email: string | null;
   message: string;
   source: string | null;
   notify_attempts: number;
@@ -38,14 +38,14 @@ export function buildEmail(inquiry: Inquiry, route: { from: string; to: string[]
   const name = oneLine(inquiry.name);
   const rows: [string, string][] = [
     ["Name", name],
-    ["Phone", oneLine(inquiry.phone)],
-    ["Email", oneLine(inquiry.email)],
+    ["Phone", oneLine(inquiry.phone ?? "") || "Not provided"],
+    ["Email", oneLine(inquiry.email ?? "") || "Not provided"],
     ["Received", formatTime(inquiry.created_at)],
     ["Page", oneLine(inquiry.source ?? "—")],
     ["Inquiry ID", inquiry.id],
   ];
 
-  const email = oneLine(inquiry.email);
+  const email = oneLine(inquiry.email ?? "");
   const replyable = SAFE_ADDRESS.test(email);
   const preview = oneLine(inquiry.message).slice(0, 110);
 
@@ -74,7 +74,7 @@ ${rows.slice(0, 3).map(detail).join("\n")}
 <tr><td style="background:#ffffff;padding:20px 28px 28px">
 <div style="margin-bottom:8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#525873">Message</div>
 <div style="white-space:pre-wrap;word-break:break-word;background:#f3f4f8;border-left:3px solid #1f2440;border-radius:4px;padding:14px 16px;font-size:15px;line-height:1.6;color:#161a2e">${escapeHtml(inquiry.message)}</div>
-${replyable ? `<div style="margin-top:16px;font-size:13px;color:#525873">Replying to this email answers ${escapeHtml(name)} directly.</div>` : ""}
+${replyable ? `<div style="margin-top:16px;font-size:13px;color:#525873">Replying to this email answers ${escapeHtml(name)} directly.</div>` : !email ? `<div style="margin-top:16px;font-size:13px;color:#525873">No email address was given, so contact ${escapeHtml(name)} by phone.</div>` : ""}
 </td></tr>
 <tr><td style="background:#f3f4f8;border-top:1px solid #dde0ea;border-radius:0 0 10px 10px;padding:16px 28px;font-size:12px;line-height:1.6;color:#525873">
 Sent from ${escapeHtml(oneLine(inquiry.source ?? "the website"))} &middot; Inquiry ID ${escapeHtml(inquiry.id)}

@@ -1,25 +1,34 @@
 "use client";
 
-import { type FormEvent, useActionState, useState } from "react";
+import { type FormEvent, useActionState, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { TextAreaField, TextField } from "@/components/ui/form-field";
+import { PhoneField } from "@/features/contact/components/phone-field";
 import { contactContent } from "@/data/home";
 import { submitInquiry } from "@/features/contact/actions";
-import {
-  CONTACT_REQUIRED_MESSAGE,
-  type InquiryErrors,
-  validateInquiryFields,
-} from "@/features/contact/client-validation";
+import type { InquiryErrors } from "@/features/contact/client-validation";
+import { CONTACT_REQUIRED_MESSAGE, INQUIRY_LIMITS } from "@/features/contact/rules";
 import type { InquiryField, InquiryFormState, InquiryValues } from "@/features/contact/types";
-import { INQUIRY_LIMITS } from "@/features/contact/validation";
 
 const initialState: InquiryFormState = { status: "idle" };
 const FIELD_ORDER: InquiryField[] = ["name", "phone", "email", "message"];
 
+// The checks include the phone-number library, so they load on demand (when the form is first touched)
+// instead of with the page.
+type Validator = typeof import("@/features/contact/client-validation");
+let validator: Validator | undefined;
+const loadValidator = () => import("@/features/contact/client-validation").then((module) => (validator = module));
+
 function readValues(form: HTMLFormElement): InquiryValues {
   const data = new FormData(form);
-  const read = (field: InquiryField) => String(data.get(field) ?? "");
-  return { name: read("name"), phone: read("phone"), email: read("email"), message: read("message") };
+  const read = (field: InquiryField | "phoneCountry") => String(data.get(field) ?? "");
+  return {
+    name: read("name"),
+    phone: read("phone"),
+    email: read("email"),
+    message: read("message"),
+    phoneCountry: read("phoneCountry"),
+  };
 }
 
 /**
@@ -34,11 +43,27 @@ export function ContactForm() {
   const invalidFields = Object.keys(errors);
   const values = state.values;
   const needsContact = errors.email === CONTACT_REQUIRED_MESSAGE;
+  const checkFailed = useRef(false);
   const hasErrorMessage = clientErrors ? invalidFields.length > 0 : state.status === "error";
   const message = clientErrors ? (invalidFields.length > 0 ? contactContent.invalidMessage : "") : state.message;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    const found = validateInquiryFields(readValues(event.currentTarget));
+    const form = event.currentTarget;
+    if (!validator) {
+      // Sent before the checks arrived: wait for them, then submit again. If they cannot load, send
+      // anyway; the server runs the same checks.
+      if (checkFailed.current) return;
+      event.preventDefault();
+      loadValidator().then(
+        () => form.requestSubmit(),
+        () => {
+          checkFailed.current = true;
+          form.requestSubmit();
+        },
+      );
+      return;
+    }
+    const found = validator.validateInquiryFields(readValues(form));
     const invalid = FIELD_ORDER.filter((field) => found[field] || (field === "phone" && found.email === CONTACT_REQUIRED_MESSAGE));
     if (invalid.length === 0) {
       setClientErrors(null);
@@ -52,8 +77,11 @@ export function ContactForm() {
   // Once a field has an error, re-check as the user types so the error goes as soon as the input is valid.
   function handleChange(event: FormEvent<HTMLFormElement>) {
     if (invalidFields.length === 0) return;
-    const found = validateInquiryFields(readValues(event.currentTarget));
-    setClientErrors(Object.fromEntries(Object.entries(found).filter(([field]) => invalidFields.includes(field))));
+    const form = event.currentTarget;
+    loadValidator().then((module) => {
+      const found = module.validateInquiryFields(readValues(form));
+      setClientErrors(Object.fromEntries(Object.entries(found).filter(([field]) => invalidFields.includes(field))));
+    }, () => {});
   }
 
   return (
@@ -62,6 +90,7 @@ export function ContactForm() {
       noValidate
       onSubmit={handleSubmit}
       onChange={handleChange}
+      onFocus={() => void loadValidator().catch(() => {})}
       aria-labelledby="contact-title"
       data-reveal
       className="grid gap-x-5 gap-y-6 rounded-card border border-border bg-background p-5 shadow-raised sm:grid-cols-2 sm:p-8 lg:p-10"
@@ -75,15 +104,14 @@ export function ContactForm() {
         maxLength={INQUIRY_LIMITS.name.max}
         defaultValue={values?.name}
         error={errors.name}
+        className="sm:col-span-2"
       />
-      <TextField
-        id="phone"
-        label="Phone"
-        type="tel"
-        autoComplete="tel"
+      <PhoneField
         maxLength={INQUIRY_LIMITS.phone.max}
+        defaultCountry={values?.phoneCountry}
         defaultValue={values?.phone}
         error={errors.phone}
+        className="sm:col-span-2"
         {...(needsContact && { "aria-invalid": true, "aria-describedby": "email-error" })}
       />
       <TextField

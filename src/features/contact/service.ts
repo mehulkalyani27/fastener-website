@@ -37,8 +37,8 @@ async function submitToSupabase(
       },
       body: JSON.stringify({
         p_name: value.name,
-        p_phone: value.phone,
-        p_email: value.email,
+        p_phone: value.phone || null,
+        p_email: value.email || null,
         p_message: value.message,
         p_source: context.source,
         p_ip_hash: context.ip ? await hashIp(context.ip, config.ipSalt) : null,
@@ -80,6 +80,7 @@ export async function processSubmission(
     phone: form.get("phone"),
     email: form.get("email"),
     message: form.get("message"),
+    phoneCountry: form.get("phoneCountry"),
   });
   if (!result.ok) {
     return { status: "error", message: contactContent.invalidMessage, fieldErrors: result.fieldErrors, values: result.values };

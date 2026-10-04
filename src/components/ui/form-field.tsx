@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef } from "react";
 
-const controlClassName =
+export const controlClassName =
   "w-full rounded-control border border-border bg-background px-4 text-base text-foreground shadow-card placeholder:text-muted/60 transition-[border-color] duration-200 hover:border-muted/50 focus:border-primary aria-invalid:border-danger";
 
 type FieldProps = {
@@ -11,7 +11,7 @@ type FieldProps = {
   error?: string;
 };
 
-function FieldError({ id, error }: { id: string; error?: string }) {
+export function FieldError({ id, error }: { id: string; error?: string }) {
   return error ? (
     <p id={`${id}-error`} className="mt-1.5 text-sm text-danger">
       {error}
