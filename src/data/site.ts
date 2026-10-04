@@ -11,10 +11,18 @@ export const siteConfig = {
 } as const;
 
 export const contactInfo = {
-  address: ["Plot No. 123, GIDC Industrial Estate, Phase II", "Vapi, Gujarat 396195", "India"],
-  email: "info@sds-metacore.com",
+  address: ["Plot No. 12, Ground Floor, Radha Madhav Estate,", "Degam, Vapi, Gujarat – 396191"],
+  email: "metacorefasteners@gmail.com",
   phone: "+91 9824341915",
   hours: ["Monday – Saturday: 8:30 AM – 6:30 PM (IST)", "Sunday: Closed"],
+} as const;
+
+const phoneDigits = contactInfo.phone.replace(/\D/g, "");
+
+export const whatsappLink = (message: string) => `https://wa.me/${phoneDigits}?text=${encodeURIComponent(message)}`;
+
+export const phoneLinks = {
+  call: `tel:+${phoneDigits}`,
 } as const;
 
 export const mainNavigation: NavItem[] = [
@@ -28,7 +36,5 @@ export const primaryCta: NavItem = {
 };
 
 export const socialLinks: SocialLink[] = [
-  { label: "LinkedIn", href: "https://linkedin.com/company/metacore-fasteners" },
-  { label: "Facebook", href: "https://facebook.com/metacorefasteners" },
-  { label: "Instagram", href: "https://instagram.com/metacorefasteners" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/metacore-fasteners/" },
 ];

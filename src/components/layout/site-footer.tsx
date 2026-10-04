@@ -2,7 +2,7 @@ import { Container } from "@/components/layout/container";
 import { Logo } from "@/components/layout/logo";
 import { productCategories } from "@/data/products";
 import { sectionPath } from "@/data/sections";
-import { contactInfo, mainNavigation, siteConfig, socialLinks } from "@/data/site";
+import { contactInfo, mainNavigation, phoneLinks, siteConfig, socialLinks } from "@/data/site";
 import { SectionLink } from "@/features/navigation/components/section-link";
 
 // The eyebrow style, with tighter tracking on phones so "PRODUCT RANGE" stays on one line and every
@@ -65,7 +65,7 @@ export function SiteFooter() {
             <a href={`mailto:${contactInfo.email}`} className={contactLinkClass}>
               {contactInfo.email}
             </a>
-            <a href={`tel:${contactInfo.phone.replace(/\s/g, "")}`} className={contactLinkClass}>
+            <a href={phoneLinks.call} className={contactLinkClass}>
               {contactInfo.phone}
             </a>
             {contactInfo.hours.map((line) => (

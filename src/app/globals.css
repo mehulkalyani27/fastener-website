@@ -16,6 +16,8 @@
   --color-primary-foreground: #ffffff;
   --color-focus: #1f2440;
   --color-danger: #b42318;
+  --color-whatsapp: #1fa855;
+  --color-whatsapp-hover: #188a45;
 
   /* Dark (navy) surfaces: header, hero, engineering, CTA and footer. */
   --color-ink: #1f2440;

@@ -33,8 +33,8 @@ export type SdsSpec = {
 
 /**
  * The roofing screw. Confirmed product data: ST 5.5 diameter, 65 mm length, 8 mm across flats,
- * 14 TPI (1.814 mm pitch) and a 16 mm bonded washer. Flange diameter, head height and drill-point
- * dimensions are still WORKING VISUALIZATION VALUES.
+ * and 14 TPI (1.814 mm pitch). Flange diameter, head height, drill-point and washer dimensions are
+ * WORKING VISUALIZATION VALUES.
  */
 export const ROOFING_SDS_VISUAL: SdsSpec = {
   diameter: 5.5,

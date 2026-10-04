@@ -18,7 +18,7 @@ export const productCategories: ProductCategory[] = [
   {
     slug: "head-type",
     name: "Head Type",
-    description: "Hex Washer Head, 8 mm (5/16\") across flats (A.F.), 14 TPI, with integrated 16 mm / 19 mm EPDM bonded washers.",
+    description: "Hex Washer Head, 8 mm (5/16\") across flats (A.F.), 14 TPI, EPDM Washer – 11 mm.",
   },
   {
     slug: "materials",
