@@ -15,6 +15,7 @@
   --color-primary-hover: #2c3358;
   --color-primary-foreground: #ffffff;
   --color-focus: #1f2440;
+  --color-danger: #b42318;
 
   /* Dark (navy) surfaces: header, hero, engineering, CTA and footer. */
   --color-ink: #1f2440;
