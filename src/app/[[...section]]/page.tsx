@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isSectionSlug, sectionRoutes } from "@/data/sections";
+import { siteConfig } from "@/data/site";
 import { HomePage } from "@/features/home/home-page";
 
 // Clean section URLs (/about, /products, …) are the same single page, pre-rendered once per path;
@@ -20,7 +21,20 @@ function sectionOf(section: string[] | undefined) {
 
 export async function generateMetadata({ params }: PageProps<"/[[...section]]">): Promise<Metadata> {
   const route = sectionOf((await params).section);
-  return route ? { title: route.label } : {};
+  if (!route) return {};
+  const path = `/${route.slug}`;
+  return {
+    description: route.description,
+    alternates: { canonical: path },
+    openGraph: {
+      type: "website",
+      siteName: siteConfig.name,
+      title: `${route.label} | ${siteConfig.name}`,
+      description: route.description,
+      url: path,
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: siteConfig.name }],
+    },
+  };
 }
 
 export default async function Page({ params }: PageProps<"/[[...section]]">) {

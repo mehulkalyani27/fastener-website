@@ -16,10 +16,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
-  title: {
-    default: siteConfig.name,
-    template: `%s | ${siteConfig.name}`,
-  },
+  title: siteConfig.title,
   description: siteConfig.description,
   openGraph: {
     type: "website",
@@ -27,6 +24,9 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
   alternates: {
     canonical: "/",
