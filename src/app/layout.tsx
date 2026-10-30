@@ -16,17 +16,17 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
-  title: {
-    default: siteConfig.name,
-    template: `%s | ${siteConfig.name}`,
-  },
+  title: siteConfig.title,
   description: siteConfig.description,
   openGraph: {
     type: "website",
-    siteName: siteConfig.name,
-    title: siteConfig.name,
+    siteName: siteConfig.title,
+    title: siteConfig.title,
     description: siteConfig.description,
     url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
   alternates: {
     canonical: "/",

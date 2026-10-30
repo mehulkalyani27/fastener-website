@@ -41,7 +41,7 @@ email failures; the inquiry is already safely stored.
    select vault.create_secret('<anon or publishable key>', 'inquiry_notify_apikey');
    ```
 5. **Website env** (`.env.local`, and on the host): `SUPABASE_URL`, `SUPABASE_ANON_KEY` (the public key) and
-   `INQUIRY_IP_SALT`. See `.env.example`. The service-role key is never needed by the website.
+   `INQUIRY_IP_SALT`. The service-role key is never needed by the website.
 
 Migrations run in order `0001` → `0004`. `0004` makes phone and email individually optional (at least one is
 required); apply it before deploying a website build that allows a single contact method.
