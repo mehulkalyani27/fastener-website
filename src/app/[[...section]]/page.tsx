@@ -28,8 +28,8 @@ export async function generateMetadata({ params }: PageProps<"/[[...section]]">)
     alternates: { canonical: path },
     openGraph: {
       type: "website",
-      siteName: siteConfig.name,
-      title: `${route.label} | ${siteConfig.name}`,
+      siteName: siteConfig.title,
+      title: siteConfig.title,
       description: route.description,
       url: path,
       images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: siteConfig.name }],
